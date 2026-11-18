@@ -84,12 +84,18 @@ def inject_css() -> None:
   [data-testid="stSidebar"] {{ background: {t['side']} !important; border-right: 1px solid {t['border']}; }}
   @media (max-width: 640px) {{ .block-container {{ padding-top: 3.6rem; }} }}
 
+  /* ---------- browser surfaces wear the palette ---------- */
+  ::selection {{ background: {t['brand_soft']}; color: {t['ink']}; }}
+  :focus-visible {{ outline: 2px solid {t['brand']}; outline-offset: 2px; }}
+  * {{ scrollbar-width: thin; scrollbar-color: {t['border']} transparent; }}
+  .p-kpi .value, .p-hero-stat .v, .p-rtable, .p-take li b, .p-check b {{ font-variant-numeric: tabular-nums; }}
+
   /* ---------- analyst read-out under every chart ---------- */
-  .p-take {{ background: {t['surface']}; border: 1px solid {t['border']}; border-left: 4px solid {t['brand']};
-    border-radius: 14px; padding: .8rem 1.1rem .7rem; margin: .5rem 0 .3rem 0;
-    box-shadow: 0 6px 18px -12px {t['shadow']}; }}
-  .p-take .h {{ font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
-    color: {t['brand']}; margin-bottom: .35rem; }}
+  .p-take {{ background: {t['surface']}; border: 1px solid {t['border']};
+    border-radius: 14px; padding: .85rem 1.15rem .75rem; margin: .6rem 0 .4rem 0;
+    box-shadow: 0 8px 22px -16px {t['shadow']}; }}
+  .p-take .h {{ display: flex; align-items: center; gap: .45rem; font-size: .72rem; font-weight: 800;
+    letter-spacing: .1em; text-transform: uppercase; color: {t['brand']}; margin-bottom: .4rem; }}
   .p-take ul {{ margin: 0; padding-left: 1.1rem; }}
   .p-take li {{ font-size: .92rem; line-height: 1.55; color: {t['ink_2']}; margin: .2rem 0; }}
   .p-take li::marker {{ color: {t['brand']}; }}

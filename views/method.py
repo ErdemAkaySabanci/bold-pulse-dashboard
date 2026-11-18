@@ -163,12 +163,14 @@ else:
     churn_g = int(jj["churn_signal_gemini"].astype(bool).sum())
     st.markdown(f"**{n_cmp}** yorum karşılaştırıldı · konu bazında ortalama uyum **{fmt.pct(mean_agree)}** · "
                 f"bütün konu seti birebir aynı olan yorum payı **{fmt.pct(exact)}**.")
-    show = tbl.assign(konu=tbl["topic"].map(fmt.topic))
-    st.dataframe(show[["konu", "agreement", "kappa", "human_yes", "model_yes"]], hide_index=True, width="stretch",
+    show = tbl.assign(konu=tbl["topic"].map(fmt.topic),
+                      kappa_txt=tbl["kappa"].map(lambda k: "—" if pd.isna(k) else fmt.num(k, 2)))
+    st.dataframe(show[["konu", "agreement", "kappa_txt", "human_yes", "model_yes"]], hide_index=True, width="stretch",
                  column_config={"konu": "Konu",
                                 "agreement": st.column_config.ProgressColumn("Uyum", format="percent", min_value=0.0, max_value=1.0),
-                                "kappa": st.column_config.NumberColumn("Cohen's κ", format="%.2f",
-                                    help="Şans eseri uyumdan arındırılmış uyum. 0,6+ iyi, 0,8+ çok iyi."),
+                                "kappa_txt": st.column_config.TextColumn("Cohen's κ",
+                                    help="Şans eseri uyumdan arındırılmış uyum. 0,6+ iyi, 0,8+ çok iyi. "
+                                         "“—”: konu örneklemde hiç geçmediği için hesaplanamaz."),
                                 "human_yes": st.column_config.NumberColumn("Elle: var", format="%d"),
                                 "model_yes": st.column_config.NumberColumn("Gemini: var", format="%d")})
     C.takeaways(insights.label_takeaways(tbl, churn_g, churn_h))

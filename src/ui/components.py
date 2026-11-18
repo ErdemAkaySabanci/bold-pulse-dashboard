@@ -220,4 +220,4 @@ def takeaways(bullets: list[str], title: str = "Ne söylüyor?") -> None:
     if not bullets:
         return
     items = "".join(f"<li>{b}</li>" for b in bullets)
-    _md(f'<div class="p-take"><div class="h">📌 {escape(title)}</div><ul>{items}</ul></div>')
+    _md(f'<div class="p-take"><div class="h">{escape(title)}</div><ul>{items}</ul></div>')

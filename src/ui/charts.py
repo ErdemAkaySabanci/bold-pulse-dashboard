@@ -173,8 +173,10 @@ def review_timeline(rv: pd.DataFrame, events: pd.DataFrame | None = None) -> go.
                                yshift=10 + 14 * (k % 2), xanchor="left",
                                font=dict(family=SANS, size=10, color=t["brand"]),
                                bgcolor=t["surface"], borderpad=2)
-    fig = _base(fig, 400, left=44, bottom=30, top=40)
-    return _legend(fig, top=70)
+    fig = _base(fig, 420, left=44, bottom=64, top=56)
+    fig = _legend(fig, top=56)
+    fig.update_layout(legend=dict(y=-0.14, yanchor="top"))
+    return fig
 
 
 def market_treemap(countries: pd.DataFrame, min_n: int = 1) -> go.Figure:
