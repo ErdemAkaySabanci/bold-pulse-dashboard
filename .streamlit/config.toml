@@ -17,16 +17,16 @@ showSidebarBorder = false
 
 [theme.light]
 primaryColor = "#FE0000"
-backgroundColor = "#F4F7FC"
-secondaryBackgroundColor = "#EAF0FA"
+backgroundColor = "#FFF9F1"
+secondaryBackgroundColor = "#F3F0EA"
 textColor = "#12172B"
-borderColor = "#E3E8F2"
+borderColor = "#ECE4D8"
 linkColor = "#E00000"
-dataframeHeaderBackgroundColor = "#EAF0FA"
+dataframeHeaderBackgroundColor = "#F3F0EA"
 chartCategoricalColors = ["#1E88E5", "#E5352B", "#7C4DFF", "#22A45D", "#EE6A0E"]
 
 [theme.light.sidebar]
-backgroundColor = "#FFFFFF"
+backgroundColor = "#FFF4E6"
 
 [theme.dark]
 primaryColor = "#FF3B30"

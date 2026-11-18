@@ -79,6 +79,7 @@ C.section("Dünya genelinde değerlendirmeler",
           "Baloncuk ne kadar büyükse o ülkeden o kadar çok değerlendirme gelmiş; renk ortalamayı gösterir "
           "(kırmızı düşük, mavi yüksek). Kaynak: App Store.", icon="🌍", color=t["blue"])
 charts.show(charts.world_map(countries), key="map")
+C.takeaways(insights.map_takeaways(countries))
 
 left, right = st.columns([1.1, 1], gap="large")
 with left:
@@ -87,8 +88,8 @@ with left:
     g = R[(R["store"] == "google_play") & (R["scope"] == "global")].iloc[0]
     shares = [g[f"share_{i}"] for i in range(1, 6)]
     charts.show(charts.star_bars(shares, int(g["rating_count"])), key="stars")
-    C.note(f"Her 100 değerlendirmeden yaklaşık {round((shares[3] + shares[4]) * 100)}'i 4–5 yıldız. "
-           "Apple yıldız dağılımını yayınlamadığı için yalnızca Google Play gösteriliyor.")
+    C.takeaways(insights.stars_takeaways(R))
+    C.note("Apple yıldız dağılımını yayınlamadığı için yalnızca Google Play gösteriliyor.")
 with right:
     C.section("Yazılı yorumların tonu", f"{fmt.num(n_rev)} yorum", icon="💬", color=t["purple"])
     counts = rv["rating_bucket"].value_counts()
@@ -97,25 +98,11 @@ with right:
         ("Nötr (3★)", int(counts.get("neutral", 0)), t["neu"]),
         ("Olumsuz (1–2★)", int(counts.get("negative", 0)), t["neg"]),
     ], n_rev)
-    ads = len(insights.ad_mentions(rv))
-    crit = int(rv["rating_bucket"].isin(["negative", "neutral"]).sum())
-    C.note(f"<b>Reklam</b>, olumsuz ve nötr (1–3★) yorumlarda en sık geçen konu: {crit} yorumun {ads}'sı "
-           "reklamlardan bahsediyor (çok dilli anahtar kelime eşleşmesi).")
-    short = int(rv["is_short"].sum())
-    C.note(f"{short} yorum (“süper”, “love it” gibi) 20 karakterden kısa; yıldız verir ama konu içermez.")
+    C.takeaways(insights.tone_takeaways(rv))
 
-as_liked = int((rv.loc[rv["store"] == "app_store", "thumbs_up"] > 0).sum())
-n_as = int((rv["store"] == "app_store").sum())
 C.section("Her nokta bir yorum",
           "Zaman içinde gelen tüm yazılı yorumlar. Nokta ne kadar büyükse o yorumu faydalı bulan (👍) "
           "oyuncu sayısı o kadar fazla; üzerine gelince yorumu okuyabilirsiniz.", icon="✨", color=t["green"])
 ev = load.events()
 charts.show(charts.review_timeline(rv, ev), key="timeline")
-last_gp = rv.loc[rv["store"] == "google_play", "date"].max()
-C.note(f"Google Play'den gelen en son yorum {fmt.date_long(last_gp)} tarihli; sonraki aylarda "
-       f"yalnızca App Store yorumları var. Beğeni çoğunlukla Google Play'de görülüyor: App Store'daki "
-       f"{n_as} yorumun yalnızca {as_liked} tanesi beğeni almış.")
-C.note(f"Kırmızı noktalı çizgiler sürüm ve etkinlik tarihleri ({len(ev)} tarihli olay). "
-       "Ayda ortalama 9 yorum geldiği için bir etkinliğin puanı yükselttiği ya da düşürdüğü "
-       "söylenemez; çizgiler yalnızca bağlam verir. Etkinlik tarihleri <code>data/events.csv</code> "
-       "dosyasından okunur.")
+C.takeaways(insights.timeline_takeaways(rv, ev))

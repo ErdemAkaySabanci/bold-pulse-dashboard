@@ -189,3 +189,44 @@ def test_topic_reliability():
     assert M.topic_reliability(0.51) == "directional"
     assert M.topic_reliability(0.2) == "anecdotal"
     assert M.topic_reliability(float("nan")) == "anecdotal"
+
+
+# ---- chart takeaways (src.insights) ----
+from src import insights as I  # noqa: E402
+
+
+def _countries(rows):
+    df = pd.DataFrame(rows, columns=["country", "n", "avg_rating"])
+    df["prior"] = (df["n"] * df["avg_rating"]).sum() / df["n"].sum() if len(df) else float("nan")
+    df["ci_low"], df["ci_high"] = df["avg_rating"] - 0.1, df["avg_rating"] + 0.1
+    return df
+
+
+def test_takeaways_empty_inputs_say_nothing():
+    empty = _countries([])
+    assert I.map_takeaways(empty) == []
+    assert I.concentration_takeaways(empty) == []
+    assert I.ranking_takeaways(empty) == []
+    assert I.platform_takeaways(pd.DataFrame(columns=["country", "as_n", "as_avg", "gp_avg", "gap"])) == []
+
+
+def test_map_takeaways_share_and_thin_countries():
+    c = _countries([("us", 600, 4.8), ("gb", 300, 4.6), ("jp", 95, 4.3), ("de", 5, 4.0)])
+    out = I.map_takeaways(c)
+    assert "%60" in out[0] and "ABD" in out[0]          # 600 / 1000 from one country
+    assert any("10'dan az" in b and "<b>1</b>" in b for b in out)
+
+
+def test_ranking_takeaways_needs_two_reliable_countries():
+    assert I.ranking_takeaways(_countries([("us", 600, 4.8), ("gb", 10, 4.6)])) == []
+    out = I.ranking_takeaways(_countries([("us", 600, 4.8), ("gb", 300, 4.6), ("jp", 95, 4.3)]))
+    assert "ABD" in out[0] and "Japonya" in out[0]
+
+
+def test_platform_takeaways_always_flags_unknown_counts():
+    gap = pd.DataFrame({"country": ["us", "au"], "as_n": [500, 90], "as_avg": [4.8, 4.6],
+                        "gp_avg": [4.8, 4.9], "gap": [0.0, 0.3]})
+    out = I.platform_takeaways(gap)
+    assert "<b>1</b>'inde" in out[0]                     # only us is within 0.2
+    assert "Avustralya" in out[1] and "Google Play" in out[1]
+    assert "kesin değildir" in out[-1]

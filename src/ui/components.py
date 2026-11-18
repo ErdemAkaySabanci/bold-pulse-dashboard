@@ -81,10 +81,11 @@ def store_legend() -> None:
     """Legend for App Store vs Google Play charts: logo + the marker each store uses."""
     _md('<div class="p-logo-legend">'
         f'<span class="item">{store_logo("app_store", 22)}<b>App Store</b>'
-        '<span class="mark dot"></span><span class="sub">daire · ülke ortalaması ve sayısı</span></span>'
+        '<span class="mark dot"></span><span class="sub">daire · ülke ortalaması, kaç değerlendirmeye '
+        'dayandığı biliniyor</span></span>'
         f'<span class="item">{store_logo("google_play", 22)}<b>Google Play</b>'
-        '<span class="mark diamond"></span><span class="sub">elmas · web sitesindeki ülke ortalaması, '
-        'sayı bilinmiyor</span></span></div>')
+        '<span class="mark diamond"></span><span class="sub">elmas · ülke ortalaması, kaç değerlendirmeye '
+        'dayandığı bilinmiyor</span></span></div>')
 
 
 def finding(n: int, title: str, body_html: str, color: str, badge: str = "", delay: float = 0) -> None:
@@ -213,3 +214,11 @@ def shot_tag(text: str, concept: bool = False) -> None:
 def step_arrow() -> None:
     """Arrow between two stages of a progression strip."""
     _md('<div class="p-step-arrow" aria-hidden="true"><span>→</span></div>')
+
+
+def takeaways(bullets: list[str], title: str = "Ne söylüyor?") -> None:
+    """Short analyst read-out under a chart: 2–3 bullets, numbers computed in src.insights."""
+    if not bullets:
+        return
+    items = "".join(f"<li>{b}</li>" for b in bullets)
+    _md(f'<div class="p-take"><div class="h">{escape(title)}</div><ul>{items}</ul></div>')
