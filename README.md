@@ -14,8 +14,7 @@ product recommendations after playing the game to level 54.
 - **Pazarlar & Platformlar** – country ranking with confidence tiers, App Store vs Google Play
 - **Oyuncu Sesi** – every review, filterable by store, tone and AI topic (with English translations)
 - **Benim Ürün Önerilerim** – competitor-inspired product recommendations with concept mockups
-- **Yorum Gezgini** – searchable review table with CSV export
-- **Metodoloji & Veri Kalitesi** – sources, cleaning, statistics, and AI-vs-human label agreement
+- **Yorum Database'i** – searchable review table with CSV export
 
 ## Run the dashboard
 ```bash

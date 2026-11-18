@@ -7,7 +7,7 @@ from src.ui import components as C, fmt
 rv = load.reviews()
 
 C.hero(
-    "Yorum Gezgini",
+    "Yorum Database'i",
     "Tüm yorumlar, tek yerde",
     "Dashboard'daki her sayının arkasındaki ham kanıt. Filtreleyin, arayın, bir satıra tıklayıp "
     "yorumun tamamını okuyun.",

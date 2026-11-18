@@ -20,8 +20,7 @@ pages = {
         st.Page("views/markets.py", title="Pazarlar & Platformlar", icon=":material/public:"),
         st.Page("views/voice.py", title="Oyuncu Sesi", icon=":material/forum:"),
         st.Page("views/recommendations.py", title="Benim Ürün Önerilerim", icon=":material/lightbulb:"),
-        st.Page("views/explorer.py", title="Yorum Gezgini", icon=":material/manage_search:"),
-        st.Page("views/method.py", title="Metodoloji & Veri Kalitesi", icon=":material/science:"),
+        st.Page("views/explorer.py", title="Yorum Database'i", icon=":material/manage_search:"),
     ],
 }
 # Labeling tool is only for re-labelling locally: PULSE_TOOLS=1 streamlit run app.py
