@@ -271,7 +271,12 @@ def platform_takeaways(gap: pd.DataFrame, min_n: int = M.DIRECTIONAL_N) -> list[
         higher = "Google Play" if r["gap"] > 0 else "App Store"
         out.append(f"Büyük pazarlarda en belirgin fark {_c(r['country'])}: {higher} oyuncuları "
                    f"<b>{fmt.num(abs(r['gap']), 2)}</b> yıldız daha yüksek veriyor.")
-    out.append("Google Play ülke başına oy sayısını yayınlamadığı için bu farklar yön gösterir, kesin değildir.")
+    extreme = g[g["gp_avg"] >= 4.95]
+    example = (f" (örneğin {_c(extreme['country'].iloc[0])}: {fmt.num(extreme['gp_avg'].iloc[0], 2)} ★)"
+               if len(extreme) else "")
+    out.append("Google Play her ülkenin yıldız ortalamasını gösteriyor ama bu ortalamanın kaç oya dayandığını "
+               f"göstermiyor. Uç değerler{example} birkaç oydan gelebilir; bu yüzden farklar yön gösterir, "
+               "kesin değildir.")
     return out
 
 
