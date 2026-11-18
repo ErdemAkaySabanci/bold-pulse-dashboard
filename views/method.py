@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 
-from src import config
+from src import config, insights
 from src import metrics as M
 from src.data import load
 from src.ui import components as C, fmt
@@ -145,7 +145,7 @@ st.markdown(f"""
 
 C.section("Etiket doğrulama (kör test)",
           "Gemini'nin etiketleri, aynı yorumlara Gemini'yi görmeden elle verilen etiketlerle karşılaştırılır "
-          "(Araçlar → Etiketleme).", icon="✅", color=t["orange"])
+          "(50 yorumluk kör örneklem, sabit seed).", icon="✅", color=t["orange"])
 if not validated:
     C.empty_state("Elle etiketleme bekleniyor",
                   "50 yorumluk örneklem Araçlar → Etiketleme sayfasında etiketlendiğinde konu bazında uyum "
@@ -158,16 +158,9 @@ else:
     tbl, exact = M.label_agreement(val, model_labels, list(fmt.TOPIC))
     n_cmp = int(tbl["n"].iloc[0]) if len(tbl) else 0
     mean_agree = float(tbl["agreement"].mean()) if len(tbl) else float("nan")
-    strong = [fmt.topic(r.topic) for r in tbl.itertuples() if M.topic_reliability(r.kappa) == "strong"]
-    mid = [fmt.topic(r.topic) for r in tbl.itertuples() if M.topic_reliability(r.kappa) == "directional"]
     jj = val.merge(rv[["review_id", "churn_signal_gemini"]], on="review_id")
     churn_h = int(jj["churn_signal"].astype(str).str.lower().eq("true").sum())
     churn_g = int(jj["churn_signal_gemini"].astype(bool).sum())
-    C.note(f"<b>Sonuç:</b> {', '.join(strong)} etiketleri <b>güvenilir</b> (κ ≥ 0,7). "
-           f"{', '.join(mid)} etiketleri <b>orta</b> düzeyde; temkinli okunmalı. Churn sinyalinde Gemini "
-           f"{churn_g}, insan {churn_h} yorum işaretledi; Gemini fazla işaretliyor. Bu yüzden örneklemdeki "
-           f"{len(val)} yorumda (1–3★ yorumların tamamı dâhil) dashboard <b>insan etiketini</b> kullanıyor; "
-           "kalan yorumlarda Gemini etiketi geçerli.")
     st.markdown(f"**{n_cmp}** yorum karşılaştırıldı · konu bazında ortalama uyum **{fmt.pct(mean_agree)}** · "
                 f"bütün konu seti birebir aynı olan yorum payı **{fmt.pct(exact)}**.")
     show = tbl.assign(konu=tbl["topic"].map(fmt.topic))
@@ -178,6 +171,7 @@ else:
                                     help="Şans eseri uyumdan arındırılmış uyum. 0,6+ iyi, 0,8+ çok iyi."),
                                 "human_yes": st.column_config.NumberColumn("Elle: var", format="%d"),
                                 "model_yes": st.column_config.NumberColumn("Gemini: var", format="%d")})
+    C.takeaways(insights.label_takeaways(tbl, churn_g, churn_h))
     C.note("Konu nadir olduğunda (ör. 50 yorumda 2 kez) uyum yüzdesi yüksek görünür ama κ düşük olabilir; "
            "κ bu yüzden ayrıca verilir.")
 

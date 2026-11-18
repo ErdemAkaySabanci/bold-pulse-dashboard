@@ -213,3 +213,11 @@ def shot_tag(text: str, concept: bool = False) -> None:
 def step_arrow() -> None:
     """Arrow between two stages of a progression strip."""
     _md('<div class="p-step-arrow" aria-hidden="true"><span>→</span></div>')
+
+
+def takeaways(bullets: list[str], title: str = "Ne söylüyor?") -> None:
+    """Short analyst read-out under a chart: 2–3 bullets, numbers computed in src.insights."""
+    if not bullets:
+        return
+    items = "".join(f"<li>{b}</li>" for b in bullets)
+    _md(f'<div class="p-take"><div class="h">📌 {escape(title)}</div><ul>{items}</ul></div>')

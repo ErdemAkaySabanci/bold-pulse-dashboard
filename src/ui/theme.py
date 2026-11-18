@@ -14,9 +14,10 @@ import streamlit as st
 
 TOKENS: dict[str, dict[str, str]] = {
     "light": {
-        "bg": "#F4F7FC", "surface": "#FFFFFF", "surface_2": "#EAF0FA",
+        "bg": "#FFF9F1", "surface": "#FFFFFF", "surface_2": "#F3F0EA",
         "ink": "#12172B", "ink_2": "#3A4361", "muted": "#6B7490",
-        "border": "#E3E8F2", "grid": "#EDF1F8", "shadow": "rgba(28, 54, 112, 0.08)",
+        "border": "#ECE4D8", "grid": "#EFEAE2", "shadow": "rgba(92, 64, 30, 0.10)",
+        "sky": "#CFE8FF", "sky_2": "#EAF5FF", "side": "#FFF4E6", "cloud": "rgba(255, 255, 255, 0.85)",
         "neg": "#E5352B", "neu": "#DD9200", "pos": "#1E88E5",
         "as": "#7C4DFF", "gp": "#22A45D",
         "red": "#E5352B", "blue": "#1E88E5", "purple": "#7C4DFF", "green": "#22A45D",
@@ -29,6 +30,7 @@ TOKENS: dict[str, dict[str, str]] = {
         "bg": "#0E1222", "surface": "#151A2E", "surface_2": "#1B2139",
         "ink": "#EEF1FA", "ink_2": "#C3C9DD", "muted": "#8C94B0",
         "border": "#232A44", "grid": "#1F2640", "shadow": "rgba(0, 0, 0, 0.35)",
+        "sky": "#1A2A5C", "sky_2": "#121B3A", "side": "#111628", "cloud": "rgba(170, 190, 255, 0.10)",
         "neg": "#E0402F", "neu": "#D0960E", "pos": "#2E8BE0",
         "as": "#9271FF", "gp": "#22A060",
         "red": "#F0503F", "blue": "#2E8BE0", "purple": "#9271FF", "green": "#22A060",
@@ -67,6 +69,31 @@ def inject_css() -> None:
   }}
 
   .block-container {{ max-width: 1240px; padding-top: 1.6rem; padding-bottom: 4rem; }}
+
+  /* ---------- page background: "market sky" (sky wash + soft clouds -> warm cream) ---------- */
+  .stApp {{ background: {t['bg']}; }}
+  [data-testid="stMain"] {{ background-color: {t['bg']};
+    background-image:
+      radial-gradient(ellipse 300px 64px at 82% 96px, {t['cloud']}, transparent 70%),
+      radial-gradient(ellipse 190px 46px at 90% 72px, {t['cloud']}, transparent 70%),
+      radial-gradient(ellipse 260px 56px at 14% 168px, {t['cloud']}, transparent 70%),
+      radial-gradient(ellipse 150px 36px at 22% 146px, {t['cloud']}, transparent 70%),
+      linear-gradient(180deg, {t['sky']} 0px, {t['sky_2']} 260px, {t['bg']} 620px);
+    background-repeat: no-repeat; background-attachment: local; }}
+  [data-testid="stHeader"] {{ background: transparent; }}
+  [data-testid="stSidebar"] {{ background: {t['side']} !important; border-right: 1px solid {t['border']}; }}
+  @media (max-width: 640px) {{ .block-container {{ padding-top: 3.6rem; }} }}
+
+  /* ---------- analyst read-out under every chart ---------- */
+  .p-take {{ background: {t['surface']}; border: 1px solid {t['border']}; border-left: 4px solid {t['brand']};
+    border-radius: 14px; padding: .8rem 1.1rem .7rem; margin: .5rem 0 .3rem 0;
+    box-shadow: 0 6px 18px -12px {t['shadow']}; }}
+  .p-take .h {{ font-size: .72rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: {t['brand']}; margin-bottom: .35rem; }}
+  .p-take ul {{ margin: 0; padding-left: 1.1rem; }}
+  .p-take li {{ font-size: .92rem; line-height: 1.55; color: {t['ink_2']}; margin: .2rem 0; }}
+  .p-take li::marker {{ color: {t['brand']}; }}
+  .p-take li b {{ color: {t['ink']}; }}
   [data-testid="stPlotlyChart"], [data-testid="stDataFrame"] {{
     animation: p-rise .7s cubic-bezier(.2,.7,.2,1) both; }}
 

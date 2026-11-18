@@ -32,6 +32,7 @@ C.section("Değerlendirmeler hangi ülkelerden geliyor?",
           "Kutunun büyüklüğü o ülkeden gelen değerlendirme sayısı, rengi ortalama yıldız. "
           "10'dan az değerlendirmesi olan ülkeler “Diğer” kutusunda.", icon="🧺", color=t["orange"])
 charts.show(charts.market_treemap(countries), key="treemap")
+C.takeaways(insights.concentration_takeaways(countries))
 
 C.section("Ülke sıralaması",
           "Nokta ülkenin ortalaması; arkasındaki soluk çubuk gerçek değerin olası aralığı. "
@@ -46,6 +47,7 @@ if view.empty:
     C.empty_state("Bu eşikte ülke yok", "Eşiği düşürmeyi deneyin.")
 else:
     charts.show(charts.market_ranking(view, prior, below), key="ranking")
+    C.takeaways(insights.ranking_takeaways(countries))
     with st.expander("Tablo olarak gör"):
         tbl = view.assign(ulke=view["country"].map(fmt.country),
                           guven=view["tier"].map(lambda x: fmt.TRUST[x][1]))
@@ -75,8 +77,8 @@ if g.empty:
     C.empty_state("Bu eşikte ortak ülke yok", "Eşiği düşürmeyi deneyin.")
 else:
     charts.show(charts.platform_dumbbell(g), key="dumbbell")
-C.note("Google Play bu ortalamaların kaç değerlendirmeye dayandığını göstermiyor; bu yüzden "
-       "Google Play değerleri fikir verir ama kesin değildir. Eşik yalnızca App Store sayısına uygulanır.")
+    C.takeaways(insights.platform_takeaways(gap, max(min_n, M.DIRECTIONAL_N)))
+C.note("Eşik yalnızca App Store sayısına uygulanır.")
 
 with st.expander("Google Play ülke ortalamaları"):
     gtab = gp.assign(ulke=gp["country"].map(fmt.country)).sort_values("avg_rating")
