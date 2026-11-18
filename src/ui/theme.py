@@ -5,7 +5,7 @@ green, sun yellow, carrot orange) plus a berry purple.
 All chart colors were checked with the dataviz palette validator in both modes.
 Roles:
   neg / neu / pos -> sentiment (red / amber / blue: red-blue survives colour-blindness)
-  as / gp         -> store identity (App Store purple / Google Play green)
+  as / gp         -> store identity (App Store blue / Google Play green)
   brand           -> Bold red: hero, section chips, controls, links (chrome, not data)
 """
 from __future__ import annotations
@@ -19,7 +19,7 @@ TOKENS: dict[str, dict[str, str]] = {
         "border": "#ECE4D8", "grid": "#EFEAE2", "shadow": "rgba(92, 64, 30, 0.10)",
         "sky": "#CFE8FF", "sky_2": "#EAF5FF", "side": "#FFF4E6", "cloud": "rgba(255, 255, 255, 0.85)",
         "neg": "#E5352B", "neu": "#DD9200", "pos": "#1E88E5",
-        "as": "#7C4DFF", "gp": "#22A45D",
+        "as": "#0A84FF", "gp": "#22A45D",
         "red": "#E5352B", "blue": "#1E88E5", "purple": "#7C4DFF", "green": "#22A45D",
         "orange": "#EE6A0E", "yellow": "#FFC21A",
         "hero_a": "#FF4B2B", "hero_b": "#FE0000", "hero_c": "#A3001E",
@@ -32,7 +32,7 @@ TOKENS: dict[str, dict[str, str]] = {
         "border": "#232A44", "grid": "#1F2640", "shadow": "rgba(0, 0, 0, 0.35)",
         "sky": "#1A2A5C", "sky_2": "#121B3A", "side": "#111628", "cloud": "rgba(170, 190, 255, 0.10)",
         "neg": "#E0402F", "neu": "#D0960E", "pos": "#2E8BE0",
-        "as": "#9271FF", "gp": "#22A060",
+        "as": "#2F8FFF", "gp": "#22A060",
         "red": "#F0503F", "blue": "#2E8BE0", "purple": "#9271FF", "green": "#22A060",
         "orange": "#E2691C", "yellow": "#F2B51C",
         "hero_a": "#E8341F", "hero_b": "#D10000", "hero_c": "#6E0016",

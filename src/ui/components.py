@@ -81,9 +81,11 @@ def store_legend() -> None:
     """Legend for App Store vs Google Play charts: logo + the marker each store uses."""
     _md('<div class="p-logo-legend">'
         f'<span class="item">{store_logo("app_store", 22)}<b>App Store</b>'
-        '<span class="sub">ülke ortalaması · kaç değerlendirmeye dayandığı biliniyor</span></span>'
+        '<span class="mark dot"></span><span class="sub">daire · ülke ortalaması, kaç değerlendirmeye '
+        'dayandığı biliniyor</span></span>'
         f'<span class="item">{store_logo("google_play", 22)}<b>Google Play</b>'
-        '<span class="sub">ülke ortalaması · kaç değerlendirmeye dayandığı bilinmiyor</span></span></div>')
+        '<span class="mark diamond"></span><span class="sub">elmas · ülke ortalaması, kaç değerlendirmeye '
+        'dayandığı bilinmiyor</span></span></div>')
 
 
 def finding(n: int, title: str, body_html: str, color: str, badge: str = "", delay: float = 0) -> None:

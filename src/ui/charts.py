@@ -4,11 +4,8 @@ Every mark has a hover; values that matter are labelled directly; rating average
 share one colour scale everywhere (red = low, amber = middle, blue = high)."""
 from __future__ import annotations
 
-import base64
 import math
 import textwrap
-from functools import lru_cache
-from pathlib import Path
 from html import escape
 
 import numpy as np
@@ -257,48 +254,34 @@ def market_ranking(view: pd.DataFrame, prior: float, below: set[str]) -> go.Figu
     return _base(fig, 90 + 34 * len(d), left=130, top=28)
 
 
-ASSETS = Path(__file__).resolve().parents[2] / "assets"
-
-
-@lru_cache(maxsize=4)
-def _svg_uri(name: str) -> str:
-    return "data:image/svg+xml;base64," + base64.b64encode((ASSETS / name).read_bytes()).decode()
-
-
 def platform_dumbbell(df: pd.DataFrame) -> go.Figure:
-    """Same country, two stores: each store is drawn with its own logo at its average."""
     t = tok()
     d = df.sort_values("as_avg", ascending=True)
     names = [fmt.country(c) for c in d["country"]]
-    lo = max(1.0, min(float(d["as_avg"].min()), float(d["gp_avg"].min())) - 0.1)
-    # Equal averages (e.g. ABD) would stack the two logos; nudge them apart for display only.
-    nudge = np.where((d["gap"].abs() < 0.03).to_numpy(), 0.016, 0.0)
-    x_as, x_gp = d["as_avg"].to_numpy() - nudge, d["gp_avg"].to_numpy() + nudge
     fig = go.Figure()
-    for xa, xg, name in zip(x_as, x_gp, names):
-        fig.add_trace(go.Scatter(x=[xa, xg], y=[name, name], mode="lines",
-                                 line=dict(color=t["ink_2"], width=4), opacity=0.22,
+    for (_, r), name in zip(d.iterrows(), names):
+        col = t["gp"] if r["gap"] > 0 else t["as"]
+        fig.add_trace(go.Scatter(x=[r["as_avg"], r["gp_avg"]], y=[name, name], mode="lines",
+                                 line=dict(color=col, width=5), opacity=0.35,
                                  hoverinfo="skip", showlegend=False))
-    # Invisible markers carry the hover; the logos below are layout images at the same spots.
-    clear = dict(size=24, color="rgba(0,0,0,0)")
     fig.add_trace(go.Scatter(
-        x=x_as, y=names, mode="markers", name="App Store", marker=clear,
-        customdata=np.stack([d["as_avg"], d["as_n"]], axis=-1),
-        hovertemplate="<b>%{y}</b><br>App Store %{customdata[0]:.2f} ★ · %{customdata[1]:,.0f} değerlendirme<extra></extra>"))
+        x=d["as_avg"], y=names, mode="markers", name="App Store",
+        marker=dict(size=15, color=t["as"], line=dict(color=t["surface"], width=2)),
+        customdata=d[["as_n"]].values,
+        hovertemplate="<b>%{y}</b><br>App Store %{x:.2f} ★ · %{customdata[0]:,} değerlendirme<extra></extra>"))
     fig.add_trace(go.Scatter(
-        x=x_gp, y=names, mode="markers", name="Google Play", marker=clear,
-        customdata=np.stack([d["gp_avg"], d["gap"]], axis=-1),
-        hovertemplate=("<b>%{y}</b><br>Google Play %{customdata[0]:.2f} ★ · sayı bilinmiyor"
-                       "<br>Fark %{customdata[1]:+.2f}<extra></extra>")))
-    for logo, xs in (("google-play.svg", x_gp), ("app-store.svg", x_as)):
-        for x, name in zip(xs, names):
-            fig.add_layout_image(source=_svg_uri(logo), x=x, y=name, xref="x", yref="y",
-                                 sizex=0.2, sizey=0.62, sizing="contain",
-                                 xanchor="center", yanchor="middle", layer="above")
+        x=d["gp_avg"], y=names, mode="markers", name="Google Play",
+        marker=dict(size=15, color=t["gp"], symbol="diamond", line=dict(color=t["surface"], width=2)),
+        customdata=d[["gap"]].values,
+        hovertemplate=("<b>%{y}</b><br>Google Play %{x:.2f} ★"
+                       "<br>Fark %{customdata[0]:+.2f}<extra></extra>")))
+    lo = max(1.0, min(float(d["as_avg"].min()), float(d["gp_avg"].min())) - 0.1)
     fig.update_xaxes(range=[lo, 5.06], dtick=0.25, tickformat=".2f")
     fig.update_yaxes(showgrid=False, tickfont=dict(family=SANS, size=13, color=t["ink"]))
+    # Draw App Store dots above Google Play diamonds so equal values (e.g. ABD) show both marks.
+    fig.data = fig.data[:-2] + (fig.data[-1], fig.data[-2])
     # Legend lives in HTML above the chart (store logos), see components.store_legend.
-    return _base(fig, 60 + 34 * len(d), left=130, top=12)
+    return _base(fig, 60 + 32 * len(d), left=130, top=12)
 
 
 def topic_bars(matrix: pd.DataFrame) -> go.Figure:

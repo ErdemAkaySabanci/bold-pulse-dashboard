@@ -67,7 +67,7 @@ else:
             })
 
 C.section("App Store mu, Google Play mi?",
-          "Her satır bir ülke: iki logo, o ülkede iki mağazanın yıldız ortalaması. Çizgi uzadıkça "
+          "Her satır bir ülke: mavi daire App Store, yeşil elmas Google Play ortalaması. Çizgi uzadıkça "
           "iki mağazanın oyuncuları daha farklı düşünüyor. Google Play'in değeri, Google Play web "
           "sitesinin o ülke için gösterdiği ortalamadır; kaç oya dayandığını Google yayınlamıyor.", icon="📱", color=t["purple"])
 C.store_legend()
