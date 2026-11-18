@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-11-18T14:18:18Z",
+  "raw_rows": 112,
+  "clean_rows": 112,
+  "cleaning_steps": [
+    {
+      "step": "drop empty text",
+      "removed": 0,
+      "remaining": 112
+    },
+    {
+      "step": "drop duplicate review_id",
+      "removed": 0,
+      "remaining": 112
+    },
+    {
+      "step": "drop duplicate store+text+rating+date",
+      "removed": 0,
+      "remaining": 112
+    },
+    {
+      "step": "drop unparseable date",
+      "removed": 0,
+      "remaining": 112
+    },
+    {
+      "step": "drop missing/invalid rating",
+      "removed": 0,
+      "remaining": 112
+    }
+  ],
+  "by_store": {
+    "app_store": 25,
+    "google_play": 87
+  },
+  "by_source": {
+    "gp_scraper": 87,
+    "rss": 25
+  },
+  "by_lang": {
+    "de": 8,
+    "en": 64,
+    "es": 7,
+    "fr": 4,
+    "it": 2,
+    "ja": 2,
+    "nl": 1,
+    "pt": 11,
+    "tr": 13
+  },
+  "by_rating": {
+    "1": 6,
+    "2": 2,
+    "3": 5,
+    "4": 9,
+    "5": 90
+  },
+  "by_rating_bucket": {
+    "negative": 8,
+    "neutral": 5,
+    "positive": 99
+  },
+  "by_month": {
+    "2025-11": 7,
+    "2025-12": 8,
+    "2026-01": 8,
+    "2026-02": 15,
+    "2026-03": 9,
+    "2026-04": 11,
+    "2026-05": 23,
+    "2026-06": 13,
+    "2026-07": 12,
+    "2026-08": 4,
+    "2026-09": 1,
+    "2026-10": 1
+  },
+  "date_range": {
+    "app_store": {
+      "min": "2026-01-07T09:39:56+00:00",
+      "max": "2026-10-17T20:40:34+00:00"
+    },
+    "google_play": {
+      "min": "2025-11-11T18:15:42+00:00",
+      "max": "2026-08-24T17:33:50+00:00"
+    }
+  },
+  "short_text": {
+    "threshold_chars": 20,
+    "count": 38
+  },
+  "app_versions": {
+    "distinct": 38,
+    "missing": 12
+  },
+  "developer_replies": 1,
+  "missing_by_column": {
+    "country": 87,
+    "title": 87,
+    "app_version": 12,
+    "developer_reply": 111,
+    "reply_date": 111
+  },
+  "known_limitations": [
+    "Google Play does not expose the reviewer's country; only review language is known.",
+    "No verified release dates exist for app versions.",
+    "Written reviews are a small, self-selected subset of all star ratings."
+  ]
+}
