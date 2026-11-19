@@ -79,9 +79,10 @@ for i, (col, f) in enumerate(zip(cols, found), start=1):
 
 C.section("Dünya genelinde değerlendirmeler",
           "Baloncuk ne kadar büyükse o ülkeden o kadar çok değerlendirme gelmiş; renk ortalamayı gösterir "
-          "(kırmızı düşük, mavi yüksek).", icon="🌍", color=t["blue"],
+          "(kırmızı düşük, mavi yüksek). Sağdaki + / − ile yakınlaştırıp sürükleyerek gezebilirsiniz.",
+          icon="🌍", color=t["blue"],
           source=C.app_store_source(countries) + ". Google Play ülke bazında sayı yayınlamadığı için dahil değil")
-charts.show(charts.world_map(countries), key="map")
+charts.show(charts.world_map(countries), key="map", config=charts.MAP_CONFIG)
 C.takeaways(insights.map_takeaways(countries))
 
 left, right = st.columns([1.1, 1], gap="large")

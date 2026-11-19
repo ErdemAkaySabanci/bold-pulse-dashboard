@@ -17,6 +17,9 @@ from src.ui import fmt
 from src.ui.theme import MONO, SANS, tok
 
 CONFIG = {"displayModeBar": False, "responsive": True, "scrollZoom": False}
+# Map: always-visible zoom in / out / reset buttons (no scroll-zoom, so the page still scrolls).
+MAP_CONFIG = {"displayModeBar": True, "displaylogo": False, "responsive": True, "scrollZoom": False,
+              "modeBarButtons": [["zoomInGeo", "zoomOutGeo", "resetGeo"]]}
 SCALE_MIN, SCALE_MAX = 4.0, 5.0
 
 
@@ -70,8 +73,8 @@ def _legend(fig: go.Figure, top: int = 40) -> go.Figure:
     return fig
 
 
-def show(fig: go.Figure, key: str | None = None, on_select: str = "ignore"):
-    return st.plotly_chart(fig, theme=None, config=CONFIG, key=key, on_select=on_select,
+def show(fig: go.Figure, key: str | None = None, on_select: str = "ignore", config: dict | None = None):
+    return st.plotly_chart(fig, theme=None, config=config or CONFIG, key=key, on_select=on_select,
                            selection_mode="points")
 
 
@@ -102,6 +105,8 @@ def world_map(countries: pd.DataFrame) -> go.Figure:
                     showland=True, landcolor=t["surface_2"], showocean=False, bgcolor="rgba(0,0,0,0)",
                     lataxis_range=[-50, 78], showlakes=False)
     fig = _base(fig, 430, left=0, bottom=0, top=0)
+    fig.update_layout(dragmode="pan", modebar=dict(orientation="v", bgcolor=t["surface"],
+                                                   color=t["ink_2"], activecolor=t["brand"]))
     return fig
 
 
