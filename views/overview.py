@@ -1,6 +1,6 @@
 import streamlit as st
 
-from src import config, insights
+from src import insights
 from src import metrics as M
 from src.data import load
 from src.ui import charts, components as C, fmt
@@ -48,19 +48,6 @@ with k3:
           f"{fmt.num(n_rev)} yazılı yorumun {fmt.pct(neg / n_rev)}'i 1–2 yıldızlı", "!",
           t["neg"], C.trust_n(neg, "yorum"), delay=0.19)
 
-us = countries[countries["country"] == "us"]
-_off = config.OFFICIAL_DISPLAY
-checks = []
-if len(us):
-    o = _off["app_store_us"]
-    checks.append({"label": o["label"], "ours_avg": float(us["avg_rating"].iloc[0]),
-                   "ours_n": int(us["n"].iloc[0]), "shown_avg": o["avg"], "shown_count_text": o["count_text"],
-                   "ok": M.matches_display(float(us["avg_rating"].iloc[0]), int(us["n"].iloc[0]), o["avg"], o["count"])})
-o = _off["google_play"]
-checks.append({"label": o["label"], "ours_avg": float(gpr["avg_rating"]), "ours_n": int(gpr["rating_count"]),
-               "shown_avg": o["avg"], "shown_count_text": o["count_text"],
-               "ok": M.matches_display(float(gpr["avg_rating"]), int(gpr["rating_count"]), o["avg"], o["count"])})
-C.official_check(checks)
 
 C.section("Öne çıkan 3 bulgu", "Her bulgu doğrudan veriden hesaplanır; kanıtı bir tık uzağında.",
           icon="💡", color=t["orange"],
