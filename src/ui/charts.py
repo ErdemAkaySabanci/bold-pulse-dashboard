@@ -147,9 +147,14 @@ def review_timeline(rv: pd.DataFrame, events: pd.DataFrame | None = None) -> go.
         y = d["rating"] + rng.uniform(-0.28, 0.28, len(d))
         # Size = how many players marked the review helpful (👍).
         size = 9 + 7 * np.sqrt(d["thumbs_up"].clip(lower=0))
+        src = d["source_lang"] if "source_lang" in d else d["lang"]
+        en = d["text_en"] if "text_en" in d else pd.Series("", index=d.index)
         hover = [f"<b>{fmt.stars(r)}</b> · {fmt.STORE[s]} · {fmt.date_long(dt)}"
                  f"<br>👍 {tu} oyuncu faydalı buldu<br><br>{_wrap(tx)}"
-                 for r, s, dt, tu, tx in zip(d["rating"], d["store"], d["date"], d["thumbs_up"], d["text"])]
+                 + (f"<br><br><b>İngilizce çeviri · {fmt.lang_from(sl)} çevrildi</b><br>{_wrap(e)}"
+                    if isinstance(e, str) and e.strip() and sl not in ("en", "und") else "")
+                 for r, s, dt, tu, tx, sl, e in zip(d["rating"], d["store"], d["date"], d["thumbs_up"],
+                                                    d["text"], src, en)]
         fig.add_trace(go.Scatter(
             x=d["date"], y=y, mode="markers", name=name,
             marker=dict(size=size, color=color, opacity=0.82, line=dict(color=t["surface"], width=1.5)),
