@@ -4,7 +4,7 @@ Streamlit dashboard analysing public App Store and Google Play ratings and revie
 *Market Match!* (Bold Games): ratings by country, platform gap, what players say, and my own
 product recommendations after playing the game to level 54.
 
-**Live:** https://bold-pulse-dashboard.streamlit.app
+**Live:** https://bold-pulse-dashboard-erdemakay.streamlit.app/
 
 > Independent portfolio work prepared for a Bold Games Data Analyst application, built only from
 > publicly available store data. It is not an official Bold Games product.
