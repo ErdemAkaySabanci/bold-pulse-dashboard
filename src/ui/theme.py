@@ -81,6 +81,10 @@ def inject_css() -> None:
       linear-gradient(180deg, {t['sky']} 0px, {t['sky_2']} 260px, {t['bg']} 620px);
     background-repeat: no-repeat; background-attachment: local; }}
   [data-testid="stHeader"] {{ background: transparent; }}
+  /* hide the toolbar's action buttons (Share / star / edit / GitHub / ⋮ menu). The toolbar itself
+     stays: on mobile it holds the logo and the button that opens the sidebar. */
+  [data-testid="stToolbarActions"], [data-testid="stToolbarActionButton"], [data-testid="stMainMenu"],
+  [data-testid="stAppDeployButton"], [data-testid="stDecoration"] {{ display: none !important; }}
   [data-testid="stSidebar"] {{ background: {t['side']} !important; border-right: 1px solid {t['border']}; }}
   @media (max-width: 640px) {{ .block-container {{ padding-top: 3.6rem; }} }}
 
