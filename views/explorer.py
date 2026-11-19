@@ -12,6 +12,7 @@ C.hero(
     "Dashboard'daki her sayının arkasındaki ham kanıt. Filtreleyin, arayın, bir satıra tıklayıp "
     "yorumun tamamını okuyun.",
 )
+C.data_source(C.reviews_source(rv, "İngilizce çeviriler: Gemini, elle kontrol edildi"))
 
 f1, f2, f3 = st.columns([1.1, 1.4, 1])
 with f1:

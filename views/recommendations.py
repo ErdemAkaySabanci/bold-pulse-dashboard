@@ -29,6 +29,9 @@ def sound_table(rows: list[tuple[str, str, str]]) -> str:
             f"</tr></thead><tbody>{body}</tbody></table>")
 
 
+C.data_source(f"Kendi oyun deneyimim ({PLAYED_TO_LEVEL}. seviyeye kadar) · rakip oyunlar · konsept görseller "
+              "bana ait")
+
 # One dict per recommendation. rows = (label, html) in reading order; images = (file, tag, caption, concept).
 RECS: list[dict] = [
     dict(

@@ -47,11 +47,37 @@ def hero(eyebrow: str, title: str, lede_html: str, stats: list[tuple[str, str]] 
         f'<h1>{escape(title)}</h1><p>{lede_html}</p>{stats_html}</div>')
 
 
-def section(title: str, sub: str | None = None, icon: str = "●", color: str | None = None) -> None:
+def _src_html(text: str) -> str:
+    return f'<div class="p-src"><b>Veri</b><span>{text}</span></div>'
+
+
+def section(title: str, sub: str | None = None, icon: str = "●", color: str | None = None,
+            source: str | None = None) -> None:
+    """`source` names the data behind the section (store, scope, counts) in one short line."""
     c = tok()["brand"]  # section chips always wear the Bold red; `color` kept for call sites
     sub_html = f"<p>{sub}</p>" if sub else ""
+    src_html = _src_html(source) if source else ""
     _md(f'<div class="p-section"><div class="ico" style="background:{c}">{icon}</div>'
-        f'<div><h3>{escape(title)}</h3>{sub_html}</div></div>')
+        f'<div><h3>{escape(title)}</h3>{sub_html}{src_html}</div></div>')
+
+
+def data_source(text: str) -> None:
+    """Stand-alone 'Veri' line for pages without a section header above their content."""
+    _md(_src_html(text))
+
+
+def reviews_source(reviews: pd.DataFrame, extra: str = "") -> str:
+    """'112 yazılı yorum · App Store 25 + Google Play 87 · date range' (+ optional extra)."""
+    n_as = int((reviews["store"] == "app_store").sum())
+    n_gp = int((reviews["store"] == "google_play").sum())
+    txt = (f"{fmt.num(len(reviews))} yazılı yorum · App Store {fmt.num(n_as)} + Google Play {fmt.num(n_gp)} · "
+           f"{fmt.date_long(reviews['date'].min())} – {fmt.date_long(reviews['date'].max())}")
+    return txt + (f" · {extra}" if extra else "")
+
+
+def app_store_source(countries: pd.DataFrame) -> str:
+    return (f"Yalnızca App Store · {fmt.num(len(countries))} ülke · "
+            f"{fmt.num(int(countries['n'].sum()))} değerlendirme (yıldız puanı)")
 
 
 def trust(tier: str | None, detail: str | None = None) -> str:

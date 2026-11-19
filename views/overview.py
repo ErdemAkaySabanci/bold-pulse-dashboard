@@ -63,7 +63,9 @@ checks.append({"label": o["label"], "ours_avg": float(gpr["avg_rating"]), "ours_
 C.official_check(checks)
 
 C.section("Öne çıkan 3 bulgu", "Her bulgu doğrudan veriden hesaplanır; kanıtı bir tık uzağında.",
-          icon="💡", color=t["orange"])
+          icon="💡", color=t["orange"],
+          source=(f"App Store {fmt.num(asr['rating_count'])} değerlendirme (ülke bazında) · Google Play "
+                  f"{fmt.num(gpr['rating_count'])} değerlendirme (dünya geneli) · {fmt.num(n_rev)} yazılı yorum"))
 # Headline findings only use well-supported evidence. The App Store vs Google Play country
 # gap stays on the Markets page: Google Play's per-country counts are unknown.
 found = [f for f in (insights.market_finding(countries, gp), insights.ads_finding(rv),
@@ -77,21 +79,24 @@ for i, (col, f) in enumerate(zip(cols, found), start=1):
 
 C.section("Dünya genelinde değerlendirmeler",
           "Baloncuk ne kadar büyükse o ülkeden o kadar çok değerlendirme gelmiş; renk ortalamayı gösterir "
-          "(kırmızı düşük, mavi yüksek). Kaynak: App Store.", icon="🌍", color=t["blue"])
+          "(kırmızı düşük, mavi yüksek).", icon="🌍", color=t["blue"],
+          source=C.app_store_source(countries) + ". Google Play ülke bazında sayı yayınlamadığı için dahil değil")
 charts.show(charts.world_map(countries), key="map")
 C.takeaways(insights.map_takeaways(countries))
 
 left, right = st.columns([1.1, 1], gap="large")
 with left:
-    C.section("Yıldızların dağılımı", f"Google Play · {fmt.num(gpr['rating_count'])} değerlendirme",
-              icon="⭐", color=t["neu"])
+    C.section("Yıldızların dağılımı", "Her çubuk, o yıldızı veren değerlendirmelerin payı.",
+              icon="⭐", color=t["neu"],
+              source=f"Yalnızca Google Play · dünya geneli · {fmt.num(gpr['rating_count'])} değerlendirme")
     g = R[(R["store"] == "google_play") & (R["scope"] == "global")].iloc[0]
     shares = [g[f"share_{i}"] for i in range(1, 6)]
     charts.show(charts.star_bars(shares, int(g["rating_count"])), key="stars")
     C.takeaways(insights.stars_takeaways(R))
     C.note("Apple yıldız dağılımını yayınlamadığı için yalnızca Google Play gösteriliyor.")
 with right:
-    C.section("Yazılı yorumların tonu", f"{fmt.num(n_rev)} yorum", icon="💬", color=t["purple"])
+    C.section("Yazılı yorumların tonu", "Ton, oyuncunun verdiği yıldızdan gelir.", icon="💬",
+              color=t["purple"], source=C.reviews_source(rv))
     counts = rv["rating_bucket"].value_counts()
     C.segmented_bar([
         ("Olumlu (4–5★)", int(counts.get("positive", 0)), t["pos"]),
@@ -102,7 +107,8 @@ with right:
 
 C.section("Her nokta bir yorum",
           "Zaman içinde gelen tüm yazılı yorumlar. Nokta ne kadar büyükse o yorumu faydalı bulan (👍) "
-          "oyuncu sayısı o kadar fazla; üzerine gelince yorumu okuyabilirsiniz.", icon="✨", color=t["green"])
+          "oyuncu sayısı o kadar fazla; üzerine gelince yorumu okuyabilirsiniz.", icon="✨", color=t["green"],
+          source=C.reviews_source(rv, "sürüm tarihleri: App Store"))
 ev = load.events()
 charts.show(charts.review_timeline(rv, ev), key="timeline")
 C.takeaways(insights.timeline_takeaways(rv, ev))

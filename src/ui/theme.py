@@ -90,6 +90,13 @@ def inject_css() -> None:
   * {{ scrollbar-width: thin; scrollbar-color: {t['border']} transparent; }}
   .p-kpi .value, .p-hero-stat .v, .p-rtable, .p-take li b, .p-check b {{ font-variant-numeric: tabular-nums; }}
 
+  /* ---------- data-source line under section titles ---------- */
+  .p-src {{ display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: .45rem; margin-top: .45rem;
+    font-size: .8rem; line-height: 1.45; color: {t['ink_2']}; background: {t['surface']};
+    border: 1px solid {t['border']}; border-radius: 10px; padding: .25rem .65rem; }}
+  .p-src b {{ font-size: .66rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase;
+    color: {t['brand']}; }}
+
   /* ---------- analyst read-out under every chart ---------- */
   .p-take {{ background: {t['surface']}; border: 1px solid {t['border']};
     border-radius: 14px; padding: .85rem 1.15rem .75rem; margin: .6rem 0 .4rem 0;

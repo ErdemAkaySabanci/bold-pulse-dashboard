@@ -30,14 +30,15 @@ C.hero(
 
 C.section("Değerlendirmeler hangi ülkelerden geliyor?",
           "Kutunun büyüklüğü o ülkeden gelen değerlendirme sayısı, rengi ortalama yıldız. "
-          "10'dan az değerlendirmesi olan ülkeler “Diğer” kutusunda.", icon="🧺", color=t["orange"])
+          "10'dan az değerlendirmesi olan ülkeler “Diğer” kutusunda.", icon="🧺", color=t["orange"],
+          source=C.app_store_source(countries))
 charts.show(charts.market_treemap(countries), key="treemap")
 C.takeaways(insights.concentration_takeaways(countries))
 
 C.section("Ülke sıralaması",
           "Nokta ülkenin ortalaması; arkasındaki soluk çubuk gerçek değerin olası aralığı. "
           "Kırmızı çubuk, aralığın tamamı mağaza ortalamasının altında demektir.",
-          icon="🏁", color=t["blue"])
+          icon="🏁", color=t["blue"], source=C.app_store_source(countries))
 min_n = st.select_slider(
     "En az kaç değerlendirmesi olan ülkeler gösterilsin?", options=[1, 5, 10, 20, 50, 100], value=20,
     help="Birkaç değerlendirmeyle hesaplanan ortalama yanıltıcı olabilir; bu yüzden varsayılan 20.")
@@ -69,7 +70,9 @@ else:
 C.section("App Store mu, Google Play mi?",
           "Her satır bir ülke: mavi daire App Store, yeşil elmas Google Play ortalaması. Çizgi uzadıkça "
           "iki mağazanın oyuncuları daha farklı düşünüyor. Google Play'in değeri, Google Play web "
-          "sitesinin o ülke için gösterdiği ortalamadır; kaç oya dayandığını Google yayınlamıyor.", icon="📱", color=t["purple"])
+          "sitesinin o ülke için gösterdiği ortalamadır; kaç oya dayandığını Google yayınlamıyor.", icon="📱", color=t["purple"],
+          source=(f"App Store ülke ortalamaları (değerlendirme sayısıyla) + Google Play web sitesindeki "
+                  f"{fmt.num(len(gp))} ülkenin ortalaması (sayısız)"))
 C.store_legend()
 g = gap[gap["as_n"] >= min_n]
 if g.empty:

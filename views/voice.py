@@ -21,6 +21,9 @@ C.hero(
            (f"{ads} / {neg + neu}", "1–3★ yorumda reklam geçiyor")],
 )
 
+C.data_source(C.reviews_source(rv_all, "konular: Gemini, 1–3★ yorumlar elle kontrol edildi"
+                                 if classified else ""))
+
 SORTS = {
     "En yeni": (["date"], [False]),
     "En eski": (["date"], [True]),
