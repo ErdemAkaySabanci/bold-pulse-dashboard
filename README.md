@@ -12,7 +12,7 @@ product recommendations after playing the game to level 54.
 ## Pages
 - **Genel Bakış** – headline KPIs, check against the official store numbers, world map, trend
 - **Pazarlar & Platformlar** – country ranking with confidence tiers, App Store vs Google Play
-- **Oyuncu Sesi** – every review, filterable by store, tone and AI topic (with English translations)
+- **Halkın Nabzı** – every review, filterable by store, tone and AI topic (with English translations)
 - **Benim Ürün Önerilerim** – competitor-inspired product recommendations with concept mockups
 - **Yorum Database'i** – searchable review table with CSV export
 

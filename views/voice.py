@@ -13,7 +13,7 @@ neu = int((rv_all["rating_bucket"] == "neutral").sum())
 ads = len(insights.ad_mentions(rv_all))
 
 C.hero(
-    "Oyuncu Sesi",
+    "Halkın Nabzı",
     "Oyuncular tam olarak ne söylüyor?",
     f"<b>{fmt.num(n)}</b> yazılı yorumun <b>{neg}</b>'i olumsuz (1–2★), <b>{neu}</b>'i nötr (3★). Yorum sayısı az "
     "olduğu için burada yüzdeler yerine yorumların kendisi konuşuyor.",
