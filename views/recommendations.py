@@ -249,6 +249,8 @@ RECS: list[dict] = [
                  T("Ayarlara erişimle ilgili destek talebi (artmamalı)",
                    "Support requests about finding Settings (should not rise)")],
         effort="Düşük", impact="Orta",
+        images=[("settings-gear-concept.jpg", CONCEPT,
+                 T("Ayarlar üst barda dişli ikonunda", "Settings moved to a gear icon in the top bar"), True)],
     ),
 ]
 
