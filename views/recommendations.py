@@ -90,6 +90,11 @@ RECS: list[dict] = [
              "Market seviyelerle birlikte büyüsün: mahalle bakkalından (<b>Corner Shop</b>) markete "
              "(<b>Fresh Market</b>), oradan lüks bir alışveriş merkezine (<b>Gourmet Plaza</b>). Her ~20 seviyede "
              "yeni bir aşama açılsın ve geçiş kısa bir açılış animasyonuyla kutlansın."),
+            ("Daha ucuz alternatif",
+             "Sıfırdan tasarıma gerek yok: <b>Order Journey</b>'deki aşama sahneleri (lunapark, sinema …) oyunda "
+             "zaten hazır. Oyuncu bir aşamayı bitirdikçe o sahne <b>ana ekranın arka planına</b> konursa, yeni "
+             "çizim yapmadan da ilerleme hissi verir. Eforu düşük olduğu için ilk adım olarak denenebilir; tam "
+             "market büyümesi sonra gelir."),
         ],
         metrics=["Aşama değişen seviyelerden sonra D1/D7 dönüş oranı", "Oturum başına oynanan seviye sayısı",
                  "Bir sonraki aşamaya yaklaşan oyuncuların churn oranı"],
@@ -98,6 +103,10 @@ RECS: list[dict] = [
         images=[("market-stage-1.jpg", "KONSEPT", "1 · Bakkal", True),
                 ("market-stage-2.jpg", "KONSEPT", "2 · Market", True),
                 ("market-stage-3.jpg", "KONSEPT", "3 · Lüks market", True)],
+        # Second strip for the cheaper alternative; shown once the mockups are in assets/recs.
+        strips_alt=[("KONSEPT · ORDER JOURNEY SAHNELERİYLE",
+                     [("journey-stage-1.jpg", "1 · Lunapark"), ("journey-stage-2.jpg", "2 · Sinema"),
+                      ("journey-stage-3.jpg", "3 · Sonraki sahne")])],
     ),
     dict(
         title="Malzemeye göre eşleşme sesleri",
@@ -178,16 +187,21 @@ for i, r in enumerate(RECS, start=1):
         if r.get("sequence"):
             # Progression: text on top, then the stages left -> right with arrows between them.
             C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"])
-            with st.container(key=f"strip-{i}"):
-                C.shot_tag("KONSEPT · İLERLEME", concept=True)
-                spec = [.5] + [x for k in range(len(imgs)) for x in ([.22, 1] if k else [1])] + [.5]
-                cols = st.columns(spec, vertical_alignment="top")[1:-1]  # screens top-aligned
-                for k, (file, _tag, caption, _concept) in enumerate(imgs):
-                    if k:
-                        with cols[2 * k - 1]:
-                            C.step_arrow()
-                    with cols[2 * k]:
-                        st.image(str(ASSETS / file), caption=caption, width="stretch")
+            strips = [("KONSEPT · İLERLEME", [(f, c) for f, _t, c, _k in imgs])] + r.get("strips_alt", [])
+            for s_no, (tag, shots) in enumerate(strips):
+                shots = [(f, c) for f, c in shots if (ASSETS / f).exists()]  # skip mockups not added yet
+                if not shots:
+                    continue
+                with st.container(key=f"strip-{i}-{s_no}"):
+                    C.shot_tag(tag, concept=True)
+                    spec = [.5] + [x for k in range(len(shots)) for x in ([.22, 1] if k else [1])] + [.5]
+                    cols = st.columns(spec, vertical_alignment="top")[1:-1]  # screens top-aligned
+                    for k, (file, caption) in enumerate(shots):
+                        if k:
+                            with cols[2 * k - 1]:
+                                C.step_arrow()
+                        with cols[2 * k]:
+                            st.image(str(ASSETS / file), caption=caption, width="stretch")
             continue
         # Single screenshot: text left, phone right in a narrow column (2.8:1) so it is about as
         # tall as the text and the card stays a clean rectangle.
