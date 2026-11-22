@@ -418,3 +418,70 @@ def mini_bars(labels: list[str], values: list[float], colors: list[str], fmt_val
     fig.update_xaxes(visible=False, range=[0, (xmax or max(values) or 1) * 1.25])
     fig.update_yaxes(autorange="reversed", showgrid=False, tickfont=dict(family=SANS, size=12, color=t["ink"]))
     return _base(fig, height, left=150, bottom=4, top=4)
+
+
+# ---------------------------------------------------------------------------------------------
+# Market Context (English page): industry benchmark in a neutral grey, Market Match in brand red.
+# ---------------------------------------------------------------------------------------------
+MM_STATUS_LABEL = {"present": "Present", "not_observed": "Not observed", "unknown": "Unknown"}
+
+
+def monetization_benchmark(bench: pd.DataFrame, status: dict[str, str]) -> go.Figure:
+    """Bars: share of top-500 games using each monetization type (industry benchmark).
+    Right-hand column: whether Market Match has it (my play-through + reviews)."""
+    t = tok()
+    d = bench.sort_values("value", ascending=True)
+    fig = go.Figure(go.Bar(
+        x=d["value"], y=d["item"], orientation="h", width=0.6,
+        marker=dict(color=t["bench"], cornerradius=4),
+        text=[f"{v:g}%" for v in d["value"]], textposition="outside", cliponaxis=False,
+        textfont=dict(family=SANS, size=11, color=t["ink_2"]),
+        customdata=d[["page"]].values,
+        hovertemplate="<b>%{y}</b><br>Industry benchmark: %{x:g}% of top 500 earning games (2024)"
+                      "<br>Source: Appfigures, p. %{customdata[0]}<extra></extra>"))
+    for item in d["item"]:
+        st_ = status.get(item, "unknown")
+        color = t["brand"] if st_ == "present" else t["muted"]
+        fig.add_annotation(x=1.0, xref="paper", xanchor="left", y=item, yref="y", showarrow=False,
+                           text=("<b>" if st_ == "present" else "") + MM_STATUS_LABEL[st_]
+                                + ("</b>" if st_ == "present" else ""),
+                           xshift=14, font=dict(family=SANS, size=12, color=color))
+    fig.add_annotation(x=1.0, xref="paper", xanchor="left", y=1.0, yref="paper", yanchor="bottom",
+                       showarrow=False, xshift=14, text="<b>Market Match</b>",
+                       font=dict(family=SANS, size=11, color=t["brand"]))
+    fig.add_annotation(x=0, xref="paper", xanchor="left", y=1.0, yref="paper", yanchor="bottom",
+                       showarrow=False, text="<b>Industry benchmark</b> · % of top 500 earning games",
+                       font=dict(family=SANS, size=11, color=t["ink_2"]))
+    fig.update_xaxes(range=[0, 112], showticklabels=False, showgrid=False)
+    fig.update_yaxes(showgrid=False, tickfont=dict(family=SANS, size=12, color=t["ink"]))
+    fig = _base(fig, 40 + 30 * len(d), left=210, top=34)
+    fig.update_layout(margin=dict(r=130), separators=".,")
+    return fig
+
+
+def market_context_scatter(df: pd.DataFrame, store_avg: float) -> go.Figure:
+    """x = 2024 change in consumer spending (industry benchmark), y = Market Match App Store
+    average, size = Market Match ratings in that country."""
+    t = tok()
+    size = 12 + 34 * np.sqrt(df["n"] / df["n"].max())
+    fig = go.Figure(go.Scatter(
+        x=df["spend_yoy"], y=df["avg_rating"], mode="markers+text", text=df["name"],
+        textposition="top center", textfont=dict(family=SANS, size=12, color=t["ink"]),
+        marker=dict(size=size, color=t["brand"], opacity=0.85, line=dict(color=t["surface"], width=1.5)),
+        customdata=np.stack([df["n"], df["page"]], axis=-1),
+        hovertemplate=("<b>%{text}</b><br>Industry benchmark: %{x:+.2f}% consumer spending, 2024 vs 2023 "
+                       "(Appfigures, p. %{customdata[1]})<br>Market Match reviews: %{y:.2f} ★ from "
+                       "%{customdata[0]:,.0f} App Store ratings<extra></extra>")))
+    fig.add_hline(y=store_avg, line=dict(color=t["ink_2"], width=1, dash="dot"))
+    fig.add_annotation(x=1, xref="paper", xanchor="right", y=store_avg, yanchor="top", yshift=-3,
+                       showarrow=False, text=f"Market Match App Store average {store_avg:.2f} ★",
+                       font=dict(family=SANS, size=11, color=t["ink_2"]))
+    fig.add_vline(x=0, line=dict(color=t["border"], width=1))
+    lo, hi = float(df["avg_rating"].min()), float(df["avg_rating"].max())
+    fig.update_yaxes(range=[lo - 0.12, hi + 0.14],
+                     title=dict(text="Market Match reviews · App Store average ★", font=dict(size=11)))
+    fig.update_xaxes(ticksuffix="%", title=dict(
+        text="Industry benchmark · change in consumer spending, 2024 vs 2023", font=dict(size=11)))
+    fig = _base(fig, 440, left=64, bottom=56, top=20)
+    fig.update_layout(separators=".,")
+    return fig

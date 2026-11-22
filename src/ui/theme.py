@@ -25,6 +25,7 @@ TOKENS: dict[str, dict[str, str]] = {
         "hero_a": "#FF4B2B", "hero_b": "#FE0000", "hero_c": "#A3001E",
         "brand": "#FE0000", "brand_soft": "#FFE8E6",
         "neg_bg": "#FDECEA", "pos_bg": "#E8F2FD", "neu_bg": "#FFF4DC",
+        "bench": "#A9B0C0",  # industry benchmark (third-party data), never used for our own data
     },
     "dark": {
         "bg": "#0E1222", "surface": "#151A2E", "surface_2": "#1B2139",
@@ -38,6 +39,7 @@ TOKENS: dict[str, dict[str, str]] = {
         "hero_a": "#E8341F", "hero_b": "#D10000", "hero_c": "#6E0016",
         "brand": "#FF3B30", "brand_soft": "#3A1416",
         "neg_bg": "#3A1A1E", "pos_bg": "#13274A", "neu_bg": "#3A2C10",
+        "bench": "#5E6784",
     },
 }
 

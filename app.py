@@ -18,6 +18,7 @@ pages = {
     "Dashboard": [
         st.Page("views/overview.py", title="Genel Bakış", icon=":material/space_dashboard:", default=True),
         st.Page("views/markets.py", title="Pazarlar & Platformlar", icon=":material/public:"),
+        st.Page("views/context.py", title="Market Context", icon=":material/insights:"),
         st.Page("views/voice.py", title="Halkın Nabzı", icon=":material/forum:"),
         st.Page("views/recommendations.py", title="Benim Ürün Önerilerim", icon=":material/lightbulb:"),
         st.Page("views/explorer.py", title="Yorum Database'i", icon=":material/manage_search:"),

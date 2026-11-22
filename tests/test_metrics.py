@@ -230,3 +230,14 @@ def test_platform_takeaways_always_flags_unknown_counts():
     assert "<b>1</b>'inde" in out[0]                     # only us is within 0.2
     assert "Avustralya" in out[1] and "Google Play" in out[1]
     assert "kesin değildir" in out[-1]
+
+
+# ---- industry benchmark file (Market Context page)
+def test_industry_benchmark_rows_are_sourced():
+    from src import config
+    b = pd.read_csv(config.DATA_DIR / "industry_benchmark.csv")
+    assert len(b) > 0
+    assert b[["section", "item", "value", "unit", "page", "pdf_page", "year", "cohort"]].notna().all().all()
+    assert (b["page"] > 0).all() and (b["pdf_page"] >= b["page"]).all()
+    assert not b.duplicated(["section", "item"]).any()
+    assert set(b.loc[b["section"] == "monetization", "value"]) <= set(range(0, 101))

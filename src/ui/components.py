@@ -47,23 +47,23 @@ def hero(eyebrow: str, title: str, lede_html: str, stats: list[tuple[str, str]] 
         f'<h1>{escape(title)}</h1><p>{lede_html}</p>{stats_html}</div>')
 
 
-def _src_html(text: str) -> str:
-    return f'<div class="p-src"><b>Veri</b><span>{text}</span></div>'
+def _src_html(text: str, label: str = "Veri") -> str:
+    return f'<div class="p-src"><b>{escape(label)}</b><span>{text}</span></div>'
 
 
 def section(title: str, sub: str | None = None, icon: str = "●", color: str | None = None,
-            source: str | None = None) -> None:
+            source: str | None = None, source_label: str = "Veri") -> None:
     """`source` names the data behind the section (store, scope, counts) in one short line."""
     c = tok()["brand"]  # section chips always wear the Bold red; `color` kept for call sites
     sub_html = f"<p>{sub}</p>" if sub else ""
-    src_html = _src_html(source) if source else ""
+    src_html = _src_html(source, source_label) if source else ""
     _md(f'<div class="p-section"><div class="ico" style="background:{c}">{icon}</div>'
         f'<div><h3>{escape(title)}</h3>{sub_html}{src_html}</div></div>')
 
 
-def data_source(text: str) -> None:
+def data_source(text: str, label: str = "Veri") -> None:
     """Stand-alone 'Veri' line for pages without a section header above their content."""
-    _md(_src_html(text))
+    _md(_src_html(text, label))
 
 
 def reviews_source(reviews: pd.DataFrame, extra: str = "") -> str:

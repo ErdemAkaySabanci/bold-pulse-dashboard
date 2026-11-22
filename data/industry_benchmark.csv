@@ -1,0 +1,41 @@
+section,item,value,unit,page,pdf_page,year,cohort
+monetization,Consumables/Currency via IAP,100,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Limited-Time Events/Offers,100,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Premium Currency via IAP,90,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,IAP Bundles/Packages,80,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Unlocks/Cosmetics via IAP,70,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Rewarded Video Ads,60,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Battle/Season Passes,55,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Gacha/Loot Box Mechanics,35,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,In-Game Advertising,30,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Subscriptions/VIP Membership,18,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Brand Sponsorships,15,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Ad-Free Paid Version,10,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,Player Trading/Marketplace,5,pct_of_games,30,32,2024,Top 500 earning games worldwide
+monetization,"Other (Merch, etc.)",5,pct_of_games,30,32,2024,Top 500 earning games worldwide
+spend_yoy,us,0.05,pct_change,7,8,2024 vs 2023,"U.S. consumer spending in mobile games, App Store & Google Play"
+spend_yoy,br,47.3,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,mx,47.1,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,pl,42.4,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,tr,36.3,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,ro,29.2,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,in,28.4,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,ae,23.8,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,sa,18.3,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,de,16.4,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,nl,15.8,pct_change,23,25,2024 vs 2023,Countries with $100M+ 2024 spending
+spend_yoy,sg,-19.0,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,my,-17.5,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,hk,-15.7,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,cl,-11.5,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,nz,-7.0,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,vn,-6.4,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,jp,-6.1,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,za,-2.3,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,au,-1.7,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_yoy,tw,-0.4,pct_change,24,26,2024 vs 2023,Countries with $50M+ 2024 spending
+spend_total,us,20.8,usd_billion,5,6,2024,"All mobile games, App Store & Google Play (rank 1)"
+spend_total,jp,8.9,usd_billion,5,6,2024,"All mobile games, App Store & Google Play (rank 3)"
+spend_per_download,world,1.52,usd,9,10,2024,"All mobile games, App Store & Google Play"
+spend_per_download,us,6.43,usd,10,11,2024,"All mobile games, App Store & Google Play"
+genre_share,Puzzle,16.3,pct_of_games,19,21,2024,Top 1000 earning games worldwide

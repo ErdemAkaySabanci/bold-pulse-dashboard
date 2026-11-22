@@ -83,6 +83,18 @@ def collected_at() -> pd.Timestamp | None:
     return pd.to_datetime(r["collected_at"].dropna().iloc[0], utc=True)
 
 
+BENCHMARK_SOURCE = "Appfigures, Mobile Games in 2025: Trends & Strategies Supercharging Revenue Growth"
+
+
+@st.cache_data(show_spinner=False)
+def benchmark() -> pd.DataFrame:
+    """Industry figures typed in verbatim from the Appfigures report, with printed page numbers."""
+    path = config.DATA_DIR / "industry_benchmark.csv"
+    if not path.exists():
+        return pd.DataFrame(columns=["section", "item", "value", "unit", "page", "pdf_page", "year", "cohort"])
+    return pd.read_csv(path)
+
+
 @st.cache_data(show_spinner=False)
 def events() -> pd.DataFrame:
     """Dated release/event markers from data/events.csv (rows without a date are skipped)."""

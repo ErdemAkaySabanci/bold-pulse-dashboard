@@ -133,6 +133,10 @@ RECS: list[dict] = [
              "309. seviyedeki bir oyuncu ayrıca bölüm sonu reklamının takıldığını ve oyunu her seferinde yeniden "
              "açmak zorunda kaldığını yazıyor."),
             *([("Oyuncular ne diyor", quotes_html)] if quotes_html else []),
+            ("Industry benchmark",
+             "En çok kazanan 500 oyunun <b>%60</b>'ı ödüllü video reklam, <b>%30</b>'u oyun içi reklam kullanıyor "
+             "(Appfigures, <i>Mobile Games in 2025</i>, s. 30). Zorunlu reklamın bir kısmını, can ya da booster "
+             "karşılığı izlenen ödüllü reklama çevirmek test edilmeli. Ayrıntı: Market Context sayfası."),
             ("Öneri",
              "İlk seviyelerde ve kısa oturumlarda geçiş reklamı gösterme, seviye ve oturum başına bir tavan koy. "
              "Reklamsız paketin her durumda (güncelleme, yeniden yükleme, cihaz değişimi) çalıştığını test et ve "
@@ -155,6 +159,10 @@ RECS: list[dict] = [
              "bir sonraki aşamaya kalan seviyeyi gösteren bir sayfa; ya da <b>sepet özelleştirme</b>, yani maskot "
              "alışveriş arabasının görünümünü coin'le değiştirme imkânı (coin'e de bir kullanım alanı açar). "
              "Hangisinin seçileceğine A/B testi karar versin."),
+            ("Industry benchmark",
+             "En çok kazanan 500 oyunun <b>%70</b>'inde kozmetik/kilit açma satışı var (Appfigures, "
+             "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. Sepet özelleştirme bu boşluğu "
+             "kapatır. Ayrıntı: Market Context sayfası."),
         ],
         metrics=["Yeni sekmenin açılma oranı", "D7 retention", "Coin harcama oranı (özelleştirme varyantında)",
                  "Ayarlara erişimle ilgili destek talebi (artmamalı)"],
