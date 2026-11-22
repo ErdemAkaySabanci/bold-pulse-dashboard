@@ -13,6 +13,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
+from src.i18n import T, is_en
 from src.ui import fmt
 from src.ui.theme import MONO, SANS, tok
 
@@ -54,7 +55,7 @@ def _base(fig: go.Figure, height: int, left: int = 48, bottom: int = 32, top: in
         font=dict(family=SANS, size=12, color=t["ink_2"]),
         hoverlabel=dict(bgcolor=t["surface"], bordercolor=t["border"],
                         font=dict(family=SANS, size=13, color=t["ink"]), align="left"),
-        showlegend=False, separators=",.", bargap=0.42,
+        showlegend=False, separators=T(",.", ".,"), bargap=0.42,
     )
     axis = dict(gridcolor=t["grid"], gridwidth=1, zeroline=False, linecolor=t["border"],
                 tickfont=dict(family=SANS, size=11, color=t["muted"]), ticks="")
@@ -96,9 +97,9 @@ def world_map(countries: pd.DataFrame) -> go.Figure:
         locations=d["country"].map(fmt.ISO3), locationmode="ISO-3",
         marker=dict(size=size, color=d["avg_rating"], colorscale=rating_scale(),
                     cmin=SCALE_MIN, cmax=SCALE_MAX, opacity=0.88,
-                    line=dict(color=t["surface"], width=1.5), colorbar=_colorbar("Ortalama")),
+                    line=dict(color=t["surface"], width=1.5), colorbar=_colorbar(T("Ortalama", "Average"))),
         customdata=np.stack([d["country"].map(fmt.country), d["n"], d["avg_rating"]], axis=-1),
-        hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[2]:.2f} ★ · %{customdata[1]:,} değerlendirme<extra></extra>",
+        hovertemplate="<b>%{customdata[0]}</b><br>%{customdata[2]:.2f} ★ · %{customdata[1]:,} " + T("değerlendirme", "ratings") + "<extra></extra>",
     ))
     fig.update_geos(projection_type="natural earth", showframe=False, showcoastlines=False,
                     showcountries=True, countrycolor=t["border"], countrywidth=0.6,
@@ -121,7 +122,7 @@ def star_bars(shares: list[float], total: int) -> go.Figure:
         text=[fmt.pct(v) for v in vals], textposition="outside", cliponaxis=False,
         textfont=dict(family=SANS, size=13, color=t["ink"]),
         customdata=[round(v * total) for v in vals],
-        hovertemplate="%{y}: %{text} · yaklaşık %{customdata:,} değerlendirme<extra></extra>",
+        hovertemplate="%{y}: %{text} · " + T("yaklaşık %{customdata:,} değerlendirme", "about %{customdata:,} ratings") + "<extra></extra>",
     ))
     fig.update_xaxes(visible=False, range=[0, max(vals) * 1.2])
     fig.update_yaxes(autorange="reversed", showgrid=False,
@@ -143,7 +144,7 @@ def review_timeline(rv: pd.DataFrame, events: pd.DataFrame | None = None) -> go.
     t = tok()
     rng = np.random.default_rng(7)
     fig = go.Figure()
-    spec = [("positive", "Olumlu (4–5★)", t["pos"]), ("neutral", "Nötr (3★)", t["neu"]),
+    spec = [("positive", fmt.BUCKET["positive"], t["pos"]), ("neutral", fmt.BUCKET["neutral"], t["neu"]),
             ("negative", "Olumsuz (1–2★)", t["neg"])]
     for bucket, name, color in spec:
         d = rv[rv["rating_bucket"] == bucket]
@@ -155,8 +156,8 @@ def review_timeline(rv: pd.DataFrame, events: pd.DataFrame | None = None) -> go.
         src = d["source_lang"] if "source_lang" in d else d["lang"]
         en = d["text_en"] if "text_en" in d else pd.Series("", index=d.index)
         hover = [f"<b>{fmt.stars(r)}</b> · {fmt.STORE[s]} · {fmt.date_long(dt)}"
-                 f"<br>👍 {tu} oyuncu faydalı buldu<br><br>{_wrap(tx)}"
-                 + (f"<br><br><b>İngilizce çeviri · {fmt.lang_from(sl)} çevrildi</b><br>{_wrap(e)}"
+                 f"<br>👍 {tu} {T('oyuncu faydalı buldu', 'players found this helpful')}<br><br>{_wrap(tx)}"
+                 + (f"<br><br><b>{T('İngilizce çeviri · ' + fmt.lang_from(sl) + ' çevrildi', 'English translation ' + fmt.lang_from(sl))}</b><br>{_wrap(e)}"
                     if isinstance(e, str) and e.strip() and sl not in ("en", "und") else "")
                  for r, s, dt, tu, tx, sl, e in zip(d["rating"], d["store"], d["date"], d["thumbs_up"],
                                                     d["text"], src, en)]
@@ -179,7 +180,8 @@ def review_timeline(rv: pd.DataFrame, events: pd.DataFrame | None = None) -> go.
             if not (lo - pd.Timedelta(days=20) <= e["date"] <= hi + pd.Timedelta(days=20)):
                 continue
             fig.add_vline(x=e["date"], line=dict(color=t["brand"], width=1.5, dash="dot"), opacity=0.7)
-            fig.add_annotation(x=e["date"], y=5.55, text=e["event"], showarrow=False, textangle=0,
+            fig.add_annotation(x=e["date"], y=5.55, showarrow=False, textangle=0,
+                               text=T(e["event"], str(e["event"]).replace("App Store çıkışı", "App Store launch").replace("Sürüm", "Version")),
                                yshift=10 + 14 * (k % 2), xanchor="left",
                                font=dict(family=SANS, size=10, color=t["brand"]),
                                bgcolor=t["surface"], borderpad=2)
@@ -201,7 +203,7 @@ def market_treemap(countries: pd.DataFrame, min_n: int = 1) -> go.Figure:
     custom = [[fmt.num(a, 2), fmt.num(n)] for a, n in zip(d["avg_rating"], d["n"])]
     if len(small):
         avg_small = float((small["n"] * small["avg_rating"]).sum() / small["n"].sum())
-        labels.append(f"Diğer {len(small)} ülke")
+        labels.append(T(f"Diğer {len(small)} ülke", f"Other {len(small)} countries"))
         values.append(int(small["n"].sum()))
         colors.append(avg_small)
         custom.append([fmt.num(avg_small, 2), fmt.num(int(small["n"].sum()))])
@@ -217,15 +219,17 @@ def market_treemap(countries: pd.DataFrame, min_n: int = 1) -> go.Figure:
         customdata=[["", fmt.num(total)]] + custom,
         texttemplate="<b>%{label}</b><br>%{customdata[0]} ★",
         textfont=dict(family=SANS, size=14, color="#FFFFFF"),
-        hovertemplate="<b>%{label}</b><br>%{customdata[0]} ★ · %{customdata[1]} değerlendirme"
-                      "<br>App Store değerlendirmelerinin %{percentRoot:.1%}'i<extra></extra>",
+        hovertemplate=T("<b>%{label}</b><br>%{customdata[0]} ★ · %{customdata[1]} değerlendirme"
+                        "<br>App Store değerlendirmelerinin %{percentRoot:.1%}'i<extra></extra>",
+                        "<b>%{label}</b><br>%{customdata[0]} ★ · %{customdata[1]} ratings"
+                        "<br>%{percentRoot:.1%} of App Store ratings<extra></extra>"),
         tiling=dict(pad=3), pathbar=dict(visible=False), maxdepth=2,
     ))
     # Colour key, drawn as an invisible scatter so the treemap keeps its stepped scale legend.
     fig.add_trace(go.Scatter(
         x=[None], y=[None], mode="markers", hoverinfo="skip", showlegend=False,
         marker=dict(colorscale=rating_scale(), cmin=SCALE_MIN, cmax=SCALE_MAX, color=[SCALE_MIN],
-                    showscale=True, colorbar=_colorbar("Ortalama"))))
+                    showscale=True, colorbar=_colorbar(T("Ortalama", "Average")))))
     fig.update_xaxes(visible=False)
     fig.update_yaxes(visible=False)
     return _base(fig, 420, left=0, bottom=0, top=0)
@@ -250,12 +254,14 @@ def market_ranking(view: pd.DataFrame, prior: float, below: set[str]) -> go.Figu
         text=[fmt.num(a, 2) for a in d["avg_rating"]], textposition="middle right",
         textfont=dict(family=SANS, size=12, color=t["ink"]),
         customdata=np.stack([d["n"], d["ci_low"], d["ci_high"]], axis=-1),
-        hovertemplate=("<b>%{y}</b><br>Ortalama %{x:.2f} ★ · %{customdata[0]:,} değerlendirme"
-                       "<br>Olası aralık %{customdata[1]:.2f} – %{customdata[2]:.2f}<extra></extra>"),
+        hovertemplate=T("<b>%{y}</b><br>Ortalama %{x:.2f} ★ · %{customdata[0]:,} değerlendirme"
+                        "<br>Olası aralık %{customdata[1]:.2f} – %{customdata[2]:.2f}<extra></extra>",
+                        "<b>%{y}</b><br>Average %{x:.2f} ★ · %{customdata[0]:,} ratings"
+                        "<br>Likely range %{customdata[1]:.2f} – %{customdata[2]:.2f}<extra></extra>"),
     ))
     fig.add_vline(x=prior, line=dict(color=t["ink_2"], width=1.5, dash="solid"))
     fig.add_annotation(x=prior, y=1.0, yref="paper", yanchor="bottom", showarrow=False,
-                       text=f"App Store ortalaması {fmt.num(prior, 2)}",
+                       text=T(f"App Store ortalaması {fmt.num(prior, 2)}", f"App Store average {fmt.num(prior, 2)}"),
                        font=dict(family=SANS, size=11, color=t["ink_2"]),
                        bgcolor=t["surface"], borderpad=3)
     lo = max(1.0, min(3.4, float(d["ci_low"].min()) - 0.05))
@@ -278,7 +284,7 @@ def platform_dumbbell(df: pd.DataFrame) -> go.Figure:
         x=d["as_avg"], y=names, mode="markers", name="App Store",
         marker=dict(size=15, color=t["as"], line=dict(color=t["surface"], width=2)),
         customdata=d[["as_n"]].values,
-        hovertemplate="<b>%{y}</b><br>App Store %{x:.2f} ★ · %{customdata[0]:,} değerlendirme<extra></extra>"))
+        hovertemplate="<b>%{y}</b><br>App Store %{x:.2f} ★ · %{customdata[0]:,} " + T("değerlendirme", "ratings") + "<extra></extra>"))
     fig.add_trace(go.Scatter(
         x=d["gp_avg"], y=names, mode="markers", name="Google Play",
         marker=dict(size=15, color=t["gp"], symbol="diamond", line=dict(color=t["surface"], width=2)),
@@ -423,7 +429,8 @@ def mini_bars(labels: list[str], values: list[float], colors: list[str], fmt_val
 # ---------------------------------------------------------------------------------------------
 # Market Context (English page): industry benchmark in a neutral grey, Market Match in brand red.
 # ---------------------------------------------------------------------------------------------
-MM_STATUS_LABEL = {"present": "Var", "not_observed": "Gözlenmedi", "unknown": "Bilinmiyor"}
+MM_STATUS_LABEL_TR = {"present": "Var", "not_observed": "Gözlenmedi", "unknown": "Bilinmiyor"}
+MM_STATUS_LABEL_EN = {"present": "Present", "not_observed": "Not observed", "unknown": "Unknown"}
 
 
 def monetization_benchmark(bench: pd.DataFrame, status: dict[str, str]) -> go.Figure:
@@ -437,22 +444,26 @@ def monetization_benchmark(bench: pd.DataFrame, status: dict[str, str]) -> go.Fi
         marker=dict(color=t["bench"], cornerradius=4),
         text=[fmt.pct(v / 100, 0) for v in d["value"]], textposition="outside", cliponaxis=False,
         textfont=dict(family=SANS, size=11, color=t["ink_2"]),
-        hovertext=[f"<b>{lab}</b> <i>({escape(it)})</i><br>Sektör verisi: en çok kazanan 500 oyunun "
-                   f"{fmt.pct(v / 100, 0)}'inde var (2024)<br>Kaynak: Appfigures, s. {pg}"
+        hovertext=[(f"<b>{lab}</b> <i>({escape(it)})</i><br>Sektör verisi: en çok kazanan 500 oyunun "
+                    f"{fmt.pct(v / 100, 0)}'inde var (2024)<br>Kaynak: Appfigures, s. {pg}") if not is_en() else
+                   (f"<b>{lab}</b><br>Industry data: used by {fmt.pct(v / 100, 0)} of the top 500 earning games "
+                    f"(2024)<br>Source: Appfigures, p. {pg}")
                    for lab, it, v, pg in zip(d["label"], d["item"], d["value"], d["page"])],
         hovertemplate="%{hovertext}<extra></extra>"))
     for lab, item in zip(d["label"], d["item"]):
         st_ = status.get(item, "unknown")
         color = t["brand"] if st_ == "present" else t["muted"]
         fig.add_annotation(x=1.0, xref="paper", xanchor="left", y=lab, yref="y", showarrow=False,
-                           text=("<b>" if st_ == "present" else "") + MM_STATUS_LABEL[st_]
+                           text=("<b>" if st_ == "present" else "")
+                                + (MM_STATUS_LABEL_EN if is_en() else MM_STATUS_LABEL_TR)[st_]
                                 + ("</b>" if st_ == "present" else ""),
                            xshift=14, font=dict(family=SANS, size=12, color=color))
     fig.add_annotation(x=1.0, xref="paper", xanchor="left", y=1.0, yref="paper", yanchor="bottom",
-                       showarrow=False, xshift=14, text="<b>Market Match'te</b>",
+                       showarrow=False, xshift=14, text=T("<b>Market Match'te</b>", "<b>In Market Match</b>"),
                        font=dict(family=SANS, size=11, color=t["brand"]))
     fig.add_annotation(x=0, xref="paper", xanchor="left", y=1.0, yref="paper", yanchor="bottom",
-                       showarrow=False, text="<b>Sektör verisi</b> · en çok kazanan 500 oyunun yüzde kaçında var",
+                       showarrow=False, text=T("<b>Sektör verisi</b> · en çok kazanan 500 oyunun yüzde kaçında var",
+                                               "<b>Industry data</b> · share of the top 500 earning games using it"),
                        font=dict(family=SANS, size=11, color=t["ink_2"]))
     fig.update_xaxes(range=[0, 112], showticklabels=False, showgrid=False)
     fig.update_yaxes(showgrid=False, tickfont=dict(family=SANS, size=12, color=t["ink"]))
@@ -470,7 +481,7 @@ def market_context_scatter(df: pd.DataFrame, store_avg: float) -> go.Figure:
 
     def tr_pct(v: float, d: int = 1) -> str:
         sign = "+" if v > 0 else ("−" if v < 0 else "")
-        return f"{sign}%{fmt.num(abs(v), d)}"
+        return f"{sign}{fmt.num(abs(v), d)}%" if is_en() else f"{sign}%{fmt.num(abs(v), d)}"
 
     fig = go.Figure()
     # Regions: growing market above / below the store average, shrinking market.
@@ -479,11 +490,14 @@ def market_context_scatter(df: pd.DataFrame, store_avg: float) -> go.Figure:
     for x0, x1, y0, y1, col in regions:
         fig.add_shape(type="rect", x0=x0, x1=x1, y0=y0, y1=y1, fillcolor=col, opacity=0.55,
                       line=dict(width=0), layer="below")
-    labels = [(x_hi, hi, "right", "top", "Büyüyen pazar · oyun ortalamadan çok seviliyor<br><b>fırsat</b>",
+    labels = [(x_hi, hi, "right", "top", T("Büyüyen pazar · oyun ortalamadan çok seviliyor<br><b>fırsat</b>",
+                                           "Growing market · game rated above average<br><b>opportunity</b>"),
                t["pos"]),
-              (x_hi, lo, "right", "bottom", "Büyüyen pazar · oyun ortalamadan az seviliyor<br><b>nedeni araştırılmalı</b>",
+              (x_hi, lo, "right", "bottom", T("Büyüyen pazar · oyun ortalamadan az seviliyor<br><b>nedeni araştırılmalı</b>",
+                                              "Growing market · game rated below average<br><b>find out why</b>"),
                t["neu"]),
-              (x_lo, lo, "left", "bottom", "Küçülen<br>pazar<br><b>dikkat</b>", t["neg"])]
+              (x_lo, lo, "left", "bottom", T("Küçülen<br>pazar<br><b>dikkat</b>", "Shrinking<br>market<br><b>caution</b>"),
+               t["neg"])]
     for x, y, xa, ya, text, col in labels:
         fig.add_annotation(x=x, y=y, xanchor=xa, yanchor=ya, showarrow=False, text=text, align=xa,
                            xshift=-6 if xa == "right" else 6, yshift=-6 if ya == "top" else 6,
@@ -493,19 +507,25 @@ def market_context_scatter(df: pd.DataFrame, store_avg: float) -> go.Figure:
         x=df["spend_yoy"], y=df["avg_rating"], mode="markers+text", text=df["name"],
         textposition="top center", textfont=dict(family=SANS, size=12, color=t["ink"]),
         marker=dict(size=size, color=t["brand"], opacity=0.88, line=dict(color=t["surface"], width=1.5)),
-        hovertext=[f"<b>{nm}</b><br>Sektör verisi: oyun harcaması 2024'te {tr_pct(v, 2 if abs(v) < 0.1 else 1)} "
-                   f"(Appfigures, s. {pg})<br>Market Match: {fmt.num(a, 2)} ★ · {fmt.num(n)} App Store puanı"
+        hovertext=[T(f"<b>{nm}</b><br>Sektör verisi: oyun harcaması 2024'te {tr_pct(v, 2 if abs(v) < 0.1 else 1)} "
+                     f"(Appfigures, s. {pg})<br>Market Match: {fmt.num(a, 2)} ★ · {fmt.num(n)} App Store puanı",
+                     f"<b>{nm}</b><br>Industry data: game spending {tr_pct(v, 2 if abs(v) < 0.1 else 1)} in 2024 "
+                     f"(Appfigures, p. {pg})<br>Market Match: {fmt.num(a, 2)} ★ · {fmt.num(n)} App Store ratings")
                    for nm, v, pg, a, n in zip(df["name"], df["spend_yoy"], df["page"], df["avg_rating"], df["n"])],
         hovertemplate="%{hovertext}<extra></extra>"))
     fig.add_hline(y=store_avg, line=dict(color=t["ink_2"], width=1, dash="dot"))
     fig.add_annotation(x=x_hi, y=store_avg, xanchor="right", yanchor="bottom", showarrow=False, xshift=-6,
-                       text=f"Market Match ortalaması {fmt.num(store_avg, 2)} ★",
+                       text=T(f"Market Match ortalaması {fmt.num(store_avg, 2)} ★",
+                              f"Market Match average {fmt.num(store_avg, 2)} ★"),
                        font=dict(family=SANS, size=11, color=t["ink_2"]))
     fig.add_vline(x=0, line=dict(color=t["ink_2"], width=1))
     ticks = list(range(-10, 51, 10))
     fig.update_xaxes(range=[x_lo, x_hi], tickvals=ticks, ticktext=[tr_pct(v, 0) for v in ticks],
-                     title=dict(text="← harcama azaldı · <b>Sektör verisi:</b> 2024'te mobil oyun harcaması "
-                                     "ne kadar değişti? · harcama arttı →", font=dict(size=11)))
+                     title=dict(text=T("← harcama azaldı · <b>Sektör verisi:</b> 2024'te mobil oyun harcaması "
+                                       "ne kadar değişti? · harcama arttı →",
+                                       "← spending fell · <b>Industry data:</b> how much did mobile game spending "
+                                       "change in 2024? · spending grew →"), font=dict(size=11)))
     fig.update_yaxes(range=[lo, hi], title=dict(
-        text="<b>Market Match:</b> App Store puanı (★) · yukarı = daha çok seviliyor", font=dict(size=11)))
+        text=T("<b>Market Match:</b> App Store puanı (★) · yukarı = daha çok seviliyor",
+               "<b>Market Match:</b> App Store rating (★) · higher = better liked"), font=dict(size=11)))
     return _base(fig, 470, left=64, bottom=60, top=16)

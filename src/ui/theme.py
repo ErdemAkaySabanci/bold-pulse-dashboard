@@ -90,6 +90,14 @@ def inject_css() -> None:
   [data-testid="stSidebar"] {{ background: {t['side']} !important; border-right: 1px solid {t['border']}; }}
   @media (max-width: 640px) {{ .block-container {{ padding-top: 3.6rem; }} }}
 
+  /* ---------- TR | EN language switch, pinned top-right on every page ---------- */
+  .st-key-lang-switch {{ position: fixed; top: .7rem; right: 1.1rem; z-index: 999991; width: auto !important; }}
+  .st-key-lang-switch [data-testid="stButtonGroup"] {{ background: {t['surface']}; border: 1px solid {t['border']};
+    border-radius: 999px; padding: 2px; box-shadow: 0 6px 16px -10px {t['shadow']}; }}
+  .st-key-lang-switch button {{ min-height: 1.9rem !important; padding: 0 .8rem !important; font-weight: 800;
+    font-size: .78rem; letter-spacing: .06em; border: 0 !important; }}
+  @media (max-width: 640px) {{ .st-key-lang-switch {{ top: .55rem; right: .7rem; }} }}
+
   /* ---------- browser surfaces wear the palette ---------- */
   ::selection {{ background: {t['brand_soft']}; color: {t['ink']}; }}
   :focus-visible {{ outline: 2px solid {t['brand']}; outline-offset: 2px; }}

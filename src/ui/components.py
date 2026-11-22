@@ -9,6 +9,7 @@ from pathlib import Path
 import pandas as pd
 import streamlit as st
 
+from src.i18n import T
 from src.metrics import confidence_tier
 from src.ui import fmt
 from src.ui.theme import tok
@@ -47,12 +48,13 @@ def hero(eyebrow: str, title: str, lede_html: str, stats: list[tuple[str, str]] 
         f'<h1>{escape(title)}</h1><p>{lede_html}</p>{stats_html}</div>')
 
 
-def _src_html(text: str, label: str = "Veri") -> str:
+def _src_html(text: str, label: str | None = None) -> str:
+    label = label or T("Veri", "Data")
     return f'<div class="p-src"><b>{escape(label)}</b><span>{text}</span></div>'
 
 
 def section(title: str, sub: str | None = None, icon: str = "●", color: str | None = None,
-            source: str | None = None, source_label: str = "Veri") -> None:
+            source: str | None = None, source_label: str | None = None) -> None:
     """`source` names the data behind the section (store, scope, counts) in one short line."""
     c = tok()["brand"]  # section chips always wear the Bold red; `color` kept for call sites
     sub_html = f"<p>{sub}</p>" if sub else ""
@@ -61,7 +63,7 @@ def section(title: str, sub: str | None = None, icon: str = "●", color: str | 
         f'<div><h3>{escape(title)}</h3>{sub_html}{src_html}</div></div>')
 
 
-def data_source(text: str, label: str = "Veri") -> None:
+def data_source(text: str, label: str | None = None) -> None:
     """Stand-alone 'Veri' line for pages without a section header above their content."""
     _md(_src_html(text, label))
 
@@ -70,14 +72,17 @@ def reviews_source(reviews: pd.DataFrame, extra: str = "") -> str:
     """'112 yazılı yorum · App Store 25 + Google Play 87 · date range' (+ optional extra)."""
     n_as = int((reviews["store"] == "app_store").sum())
     n_gp = int((reviews["store"] == "google_play").sum())
-    txt = (f"{fmt.num(len(reviews))} yazılı yorum · App Store {fmt.num(n_as)} + Google Play {fmt.num(n_gp)} · "
+    txt = (f"{fmt.num(len(reviews))} {T('yazılı yorum', 'written reviews')} · App Store {fmt.num(n_as)} + "
+           f"Google Play {fmt.num(n_gp)} · "
            f"{fmt.date_long(reviews['date'].min())} – {fmt.date_long(reviews['date'].max())}")
     return txt + (f" · {extra}" if extra else "")
 
 
 def app_store_source(countries: pd.DataFrame) -> str:
-    return (f"Yalnızca App Store · {fmt.num(len(countries))} ülke · "
-            f"{fmt.num(int(countries['n'].sum()))} değerlendirme (yıldız puanı)")
+    return T(f"Yalnızca App Store · {fmt.num(len(countries))} ülke · "
+             f"{fmt.num(int(countries['n'].sum()))} değerlendirme (yıldız puanı)",
+             f"App Store only · {fmt.num(len(countries))} countries · "
+             f"{fmt.num(int(countries['n'].sum()))} ratings (stars)")
 
 
 def trust(tier: str | None, detail: str | None = None) -> str:
@@ -86,9 +91,10 @@ def trust(tier: str | None, detail: str | None = None) -> str:
     return f'<span class="p-trust {cls}">{escape(text)}</span>'
 
 
-def trust_n(n: int | None, unit: str = "veri") -> str:
+def trust_n(n: int | None, unit: str | None = None) -> str:
+    unit = unit or T("veri", "data points")
     if n is None:
-        return trust("directional", "sayı yayınlanmıyor")
+        return trust("directional", T("sayı yayınlanmıyor", "count not published"))
     return trust(confidence_tier(n), f"{fmt.num(n)} {unit}")
 
 
@@ -107,16 +113,14 @@ def store_legend() -> None:
     """Legend for App Store vs Google Play charts: logo + the marker each store uses."""
     _md('<div class="p-logo-legend">'
         f'<span class="item">{store_logo("app_store", 22)}<b>App Store</b>'
-        '<span class="mark dot"></span><span class="sub">daire · ülke ortalaması, kaç değerlendirmeye '
-        'dayandığı biliniyor</span></span>'
+        f'<span class="mark dot"></span><span class="sub">{T("daire · ülke ortalaması, kaç değerlendirmeye dayandığı biliniyor", "circle · country average, rating count known")}</span></span>'
         f'<span class="item">{store_logo("google_play", 22)}<b>Google Play</b>'
-        '<span class="mark diamond"></span><span class="sub">elmas · ülke ortalaması, kaç değerlendirmeye '
-        'dayandığı bilinmiyor</span></span></div>')
+        f'<span class="mark diamond"></span><span class="sub">{T("elmas · ülke ortalaması, kaç değerlendirmeye dayandığı bilinmiyor", "diamond · country average, rating count unknown")}</span></span></div>')
 
 
 def finding(n: int, title: str, body_html: str, color: str, badge: str = "", delay: float = 0) -> None:
     _md(f'<div class="p-card p-find" style="--c:{color};animation-delay:{delay}s">'
-        f'<div class="n">BULGU {n}</div><div class="t">{escape(title)}</div>'
+        f'<div class="n">{T("BULGU", "FINDING")} {n}</div><div class="t">{escape(title)}</div>'
         f'<div class="b">{body_html}</div>{badge}</div>')
 
 
@@ -132,7 +136,7 @@ def quote(row: pd.Series) -> None:
     en = row.get("text_en")
     tr_html = ""
     if isinstance(en, str) and en.strip() and src not in ("en", "und"):
-        tr_html = (f'<div class="en"><div class="en-h">🇬🇧 İngilizce çeviri · {escape(fmt.lang_from(src))}'
+        tr_html = (f'<div class="en"><div class="en-h">🇬🇧 {T("İngilizce çeviri", "English translation")} · {escape(fmt.lang_from(src))}'
                    f'</div><div class="en-t">{escape(en)}</div></div>')
     pills = [f'<span class="p-pill date">📅 {fmt.date_long(row["date"])}</span>',
              f'<span class="p-pill stars" style="--c:{c}">{int(row["rating"])} ★</span>',
@@ -170,7 +174,7 @@ def segmented_bar(parts: list[tuple[str, int, str]], total: int) -> None:
                       f'title="{escape(label)}: {count} / {total} ({fmt.pct(share)})">{text}</div>')
         legend.append(f'<span style="--c:{color}">{escape(label)} · <b>{count}</b></span>')
         delay += 0.15
-    _md(f'<div class="p-seg" role="img" aria-label="{total} yorumun dağılımı">{"".join(blocks)}</div>'
+    _md(f'<div class="p-seg" role="img" aria-label="{T(f"{total} yorumun dağılımı", f"split of {total} reviews")}">{"".join(blocks)}</div>'
         f'<div class="p-legend">{"".join(legend)}</div>')
 
 
@@ -179,12 +183,14 @@ def sidebar_footer(n_reviews: int, n_ratings: int, collected) -> None:
     with st.sidebar:
         st.space("medium")
         _md(f"""<div class="p-side"><div class="brand">PULSE</div><div class="rule"></div>
-<div>Oyuncu Analitiği · <i>Market Match!</i></div><br>
-<div>Veri tarihi <span class="num">{when}</span></div>
-<div><span class="num">{fmt.num(n_ratings)}</span> değerlendirme</div>
-<div><span class="num">{fmt.num(n_reviews)}</span> yazılı yorum</div><br>
-<div>Bold Games Data Analyst başvurusu için herkese açık mağaza verisiyle hazırlanmış
-bağımsız bir portfolyo çalışmasıdır; resmi bir Bold Games ürünü değildir.</div></div>""")
+<div>{T("Oyuncu Analitiği", "Player Analytics")} · <i>Market Match!</i></div><br>
+<div>{T("Veri tarihi", "Data as of")} <span class="num">{when}</span></div>
+<div><span class="num">{fmt.num(n_ratings)}</span> {T("değerlendirme", "ratings")}</div>
+<div><span class="num">{fmt.num(n_reviews)}</span> {T("yazılı yorum", "written reviews")}</div><br>
+<div>{T("Bold Games Data Analyst başvurusu için herkese açık mağaza verisiyle hazırlanmış bağımsız bir "
+        "portfolyo çalışmasıdır; resmi bir Bold Games ürünü değildir.",
+        "An independent portfolio project built from public store data for a Bold Games Data Analyst "
+        "application; not an official Bold Games product.")}</div></div>""")
 
 
 def official_check(rows: list[dict]) -> None:
@@ -206,6 +212,8 @@ def official_check(rows: list[dict]) -> None:
 
 EFFORT = {"Düşük": "green", "Orta": "orange", "Yüksek": "red"}   # low effort is the good end
 IMPACT = {"Yüksek": "brand", "Orta": "orange", "Düşük": "muted"}
+LEVEL_EN = {"Düşük": "Low", "Orta": "Medium", "Yüksek": "High"}
+ACTION_LABELS = ("Öneri", "Recommendation")   # the highlighted row of a recommendation card
 
 
 def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[str],
@@ -216,18 +224,19 @@ def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[s
 
     def badge(name: str, level: str, color_key: str) -> str:
         c = t[color_key]
+        shown = T(level, LEVEL_EN.get(level, level))
         return (f'<span class="lvl" style="--c:{c};--bg:{c}1F">{escape(name)}: '
-                f'<b>{escape(level)}</b></span>')
+                f'<b>{escape(shown)}</b></span>')
 
     body = "".join(
-        f'<div class="row{" action" if label == "Öneri" else ""}"><span class="l">{escape(label)}</span>'
+        f'<div class="row{" action" if label in ACTION_LABELS else ""}"><span class="l">{escape(label)}</span>'
         f'<span>{html}</span></div>' for label, html in rows)
     chips = "".join(f"<span>{escape(m)}</span>" for m in metrics)
-    body += (f'<div class="row"><span class="l">Nasıl ölçülür</span>'
+    body += (f'<div class="row"><span class="l">{T("Nasıl ölçülür", "How to measure")}</span>'
              f'<span class="metrics">{chips}</span></div>')
-    _md(f'<div class="p-prec"><div class="top"><span class="k">ÖNERİ {n}</span>'
-        f'{badge("Efor", effort, EFFORT.get(effort, "muted"))}'
-        f'{badge("Etki", impact, IMPACT.get(impact, "muted"))}</div>'
+    _md(f'<div class="p-prec"><div class="top"><span class="k">{T("ÖNERİ", "RECOMMENDATION")} {n}</span>'
+        f'{badge(T("Efor", "Effort"), effort, EFFORT.get(effort, "muted"))}'
+        f'{badge(T("Etki", "Impact"), impact, IMPACT.get(impact, "muted"))}</div>'
         f'<div class="t">{escape(title)}</div>{body}</div>')
 
 
@@ -241,9 +250,10 @@ def step_arrow() -> None:
     _md('<div class="p-step-arrow" aria-hidden="true"><span>→</span></div>')
 
 
-def takeaways(bullets: list[str], title: str = "Ne söylüyor?") -> None:
+def takeaways(bullets: list[str], title: str | None = None) -> None:
     """Short analyst read-out under a chart: 2–3 bullets, numbers computed in src.insights."""
     if not bullets:
         return
+    title = title or T("Ne söylüyor?", "What it says")
     items = "".join(f"<li>{b}</li>" for b in bullets)
     _md(f'<div class="p-take"><div class="h">{escape(title)}</div><ul>{items}</ul></div>')
