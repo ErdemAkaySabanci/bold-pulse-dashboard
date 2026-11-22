@@ -105,8 +105,8 @@ RECS: list[dict] = [
                 ("market-stage-3.jpg", "KONSEPT", "3 · Lüks market", True)],
         # Second strip for the cheaper alternative; shown once the mockups are in assets/recs.
         strips_alt=[("KONSEPT · ORDER JOURNEY SAHNELERİYLE",
-                     [("journey-stage-1.jpg", "1 · Lunapark"), ("journey-stage-2.jpg", "2 · Sinema"),
-                      ("journey-stage-3.jpg", "3 · Sonraki sahne")])],
+                     [("journey-stage-1.jpg", "Order Journey sahneleri (mevcut)"), ("journey-stage-2.jpg", "Seviye 30 · Lunapark"),
+                      ("journey-stage-3.jpg", "Seviye 60 · Sinema")])],
     ),
     dict(
         title="Malzemeye göre eşleşme sesleri",
