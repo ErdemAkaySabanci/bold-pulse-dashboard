@@ -51,7 +51,7 @@ STATUS = {
     "IAP Bundles/Packages": "present",               # Starter Bag and a larger booster bundle
     "In-Game Advertising": "present",                # end-of-level ads reported in reviews
     "Ad-Free Paid Version": "present",               # ad-free play is part of the Starter Bag
-    "Rewarded Video Ads": "unknown",                 # not observed in play, not mentioned in reviews
+    "Rewarded Video Ads": "present",                 # "Clear 3 items" when the tray is full, "+1 Life"
 }
 mon = B[B["section"] == "monetization"]
 status = {i: STATUS.get(i, "not_observed") for i in mon["item"]}
@@ -79,11 +79,11 @@ C.takeaways([
      f"The must-haves are in place: consumables ({pct(cons)}) and limited-time offers ({pct(lto)}) are near "
      f"universal in the top 500 (p. {p30}), and Market Match has both."),
     f"Rewarded video ads are used by {pct(rewarded)} of the top 500, in-game advertising by {pct(ingame)} "
-    f"(p. {p30}). In Market Match, ads are the most common complaint: <b>{n_ads} of {n_crit}</b> players who "
-    "gave 1–3★ mention them. Moving part of the forced end-of-level ads to opt-in rewarded ads (a life or a "
-    "booster for watching) is worth testing (Recommendation 4).",
+    f"(p. {p30}). Market Match already has both: rewarded videos for an extra chance when the tray is full "
+    "(“Clear 3 items”) and for “+1 Life”, plus end-of-level ads. Ads are still its most common complaint: "
+    f"<b>{n_ads} of {n_crit}</b> players who gave 1–3★ mention them.",
     f"Unlocks/cosmetics are sold by {pct(cosm)} of the top 500 (p. {p30}) but were not seen in Market Match, "
-    "and coins have no visible use in the first levels. This is the clearest gap, and the case for cart "
+    "where coins go to lives and extra chances only. This is the clearest gap, and the case for cart "
     "customization (Recommendation 5).",
     "Limits: the report does not define “In-Game Advertising”, and this is a presence check, not revenue "
     "impact. “Not observed” means not seen in my play-through, not proven absent.",
