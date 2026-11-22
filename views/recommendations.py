@@ -3,10 +3,14 @@
 Approach: not new ideas from scratch, but features proven in competing games and how each could be
 integrated into Market Match!. Order on the page = order of RECS.
 """
+from html import escape
 from pathlib import Path
 
 import streamlit as st
 
+from src import insights
+from src import metrics as M
+from src.data import load
 from src.ui import components as C
 
 PLAYED_TO_LEVEL = 84
@@ -30,7 +34,24 @@ def sound_table(rows: list[tuple[str, str, str]]) -> str:
 
 
 C.data_source(f"Kendi oyun deneyimim ({PLAYED_TO_LEVEL}. seviyeye kadar) · rakip oyunlar · konsept görseller "
-              "bana ait")
+              "bana ait · reklam önerisinde mağaza yorumları")
+
+# --- Evidence for the ads card, computed from the same reviews as the Overview page (no hand-typed counts)
+rv = load.reviews()
+n_crit = int(rv["rating_bucket"].isin(["negative", "neutral"]).sum())
+ad_rv = insights.ad_mentions(rv)
+n_ads = len(ad_rv)
+n_noads = int(rv["monetization"].map(lambda v: "no_ads_pack" in M.split_labels(v)).sum()) if "monetization" in rv else 0
+# Two short player quotes, with a Turkish rendering; skipped if the review is not in the data.
+QUOTES = [("after each level an ad will start and stop",
+           "309 seviye oynadım, birden her seviyeden sonra reklam açılıp takılmaya başladı."),
+          ("paid for the removal of ads",
+           "Reklam mı görüyorum? Reklamları kaldırmak için para ödediğime eminim.")]
+quotes_html = "".join(
+    f"<div style='margin:.15rem 0'>“{escape(hit['text'].iloc[0][:150])}{'…' if len(hit['text'].iloc[0]) > 150 else ''}” "
+    f"<span style='opacity:.75'>({hit['rating'].iloc[0]}★ · {escape(tr)})</span></div>"
+    for key, tr in QUOTES
+    if len(hit := ad_rv[ad_rv["text"].str.contains(key, case=False, regex=False)]))
 
 # One dict per recommendation. rows = (label, html) in reading order; images = (file, tag, caption, concept).
 RECS: list[dict] = [
@@ -99,6 +120,44 @@ RECS: list[dict] = [
             ])),
         ],
         metrics=["A/B testinde oturum süresi", "Oturum başına oynanan seviye sayısı", "D1 retention"],
+        effort="Düşük", impact="Orta",
+    ),
+    dict(
+        title="Reklam akışını oyuncuyu kaçırmayacak şekilde yeniden ayarla",
+        rows=[
+            ("Bulgu",
+             f"1–3★ veren <b>{n_crit}</b> oyuncunun <b>{n_ads}</b>'sı reklamdan bahsediyor; şikâyetlerin en sık "
+             "nedeni bu. Şikâyetler üç türe ayrılıyor: <b>sıklık</b> (“her seviye sonunda reklam”, “kısa sürede "
+             "reklam yağmuruna tutuluyorsun”), <b>ödeme sorunu</b> (reklamsız paketi aldığı hâlde reklam gören "
+             f"{n_noads} oyuncu) ve <b>yanıltıcı tanıtım</b> (reklam videosunun oyunla uyuşmadığını söyleyenler). "
+             "309. seviyedeki bir oyuncu ayrıca bölüm sonu reklamının takıldığını ve oyunu her seferinde yeniden "
+             "açmak zorunda kaldığını yazıyor."),
+            *([("Oyuncular ne diyor", quotes_html)] if quotes_html else []),
+            ("Öneri",
+             "İlk seviyelerde ve kısa oturumlarda geçiş reklamı gösterme, seviye ve oturum başına bir tavan koy. "
+             "Reklamsız paketin her durumda (güncelleme, yeniden yükleme, cihaz değişimi) çalıştığını test et ve "
+             "bölüm sonu reklamının takılma hatasını incele. Tanıtım videolarını gerçek oynanışla uyumlu hâle getir."),
+        ],
+        metrics=["Reklam kaynaklı 1–3★ yorum sayısı", "D1/D7 retention (reklam tavanlı ve tavansız varyant)",
+                 "Oturum başına reklam geliri", "Reklamsız paket sahiplerinde reklam gösterimi (0 olmalı)"],
+        effort="Orta", impact="Yüksek",
+    ),
+    dict(
+        title="Ayarları dişli ikonuna taşı, sekmeyi ilerleme için kullan",
+        rows=[
+            ("Bulgu",
+             "Alt menüdeki 5 sekmeden biri <b>Ayarlar</b>. İçinde sadece müzik, ses, titreşim ve ipucu anahtarları, "
+             "bildirim ayarı, destek ve yasal linkler var. Sık açılmayan bir ekran, navigasyonun en değerli "
+             "alanlarından birini kaplıyor."),
+            ("Öneri",
+             "Ayarlar üst bardaki bir <b>dişli ikonuna</b> taşınsın ve boşalan sekmeye iki seçenekten biri gelsin: "
+             "<b>İlerleme haritası</b>, yani 2. önerideki market aşamalarını (bakkal → market → lüks market) ve "
+             "bir sonraki aşamaya kalan seviyeyi gösteren bir sayfa; ya da <b>sepet özelleştirme</b>, yani maskot "
+             "alışveriş arabasının görünümünü coin'le değiştirme imkânı (coin'e de bir kullanım alanı açar). "
+             "Hangisinin seçileceğine A/B testi karar versin."),
+        ],
+        metrics=["Yeni sekmenin açılma oranı", "D7 retention", "Coin harcama oranı (özelleştirme varyantında)",
+                 "Ayarlara erişimle ilgili destek talebi (artmamalı)"],
         effort="Düşük", impact="Orta",
     ),
 ]
