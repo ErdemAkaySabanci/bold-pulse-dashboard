@@ -209,7 +209,7 @@ IMPACT = {"Yüksek": "brand", "Orta": "orange", "Düşük": "muted"}
 
 
 def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[str],
-                effort: str, impact: str, source: str) -> None:
+                effort: str, impact: str) -> None:
     """Text side of a product recommendation card. `rows` are (label, html); a row labelled
     'Öneri' is highlighted. Effort/impact badges sit next to the number."""
     t = tok()
@@ -228,8 +228,7 @@ def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[s
     _md(f'<div class="p-prec"><div class="top"><span class="k">ÖNERİ {n}</span>'
         f'{badge("Efor", effort, EFFORT.get(effort, "muted"))}'
         f'{badge("Etki", impact, IMPACT.get(impact, "muted"))}</div>'
-        f'<div class="t">{escape(title)}</div>{body}'
-        f'<span class="src">Kaynak: {escape(source)}</span></div>')
+        f'<div class="t">{escape(title)}</div>{body}</div>')
 
 
 def shot_tag(text: str, concept: bool = False) -> None:

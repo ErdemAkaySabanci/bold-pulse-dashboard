@@ -9,7 +9,7 @@ import streamlit as st
 
 from src.ui import components as C
 
-PLAYED_TO_LEVEL = 54
+PLAYED_TO_LEVEL = 84
 ASSETS = Path(__file__).resolve().parents[1] / "assets" / "recs"
 
 C.hero(
@@ -52,8 +52,6 @@ RECS: list[dict] = [
         metrics=["İlk booster kullanımının seviyesi", "Booster paketlerinin satın alma oranı",
                  "Booster kullananlarla kullanmayanların retention farkı"],
         effort="Düşük", impact="Yüksek",
-        source=(f"Kendi oyun deneyimim ({PLAYED_TO_LEVEL}. seviyeye kadar) · Manor Cafe: daha önce "
-                "hazırladığım Gamegos case study'si"),
         images=[("booster-tutorial-concept.jpg", "KONSEPT", "Zorunlu Undo eğitimi mockup'ı", True)],
     ),
     dict(
@@ -75,8 +73,6 @@ RECS: list[dict] = [
         metrics=["Aşama değişen seviyelerden sonra D1/D7 dönüş oranı", "Oturum başına oynanan seviye sayısı",
                  "Bir sonraki aşamaya yaklaşan oyuncuların churn oranı"],
         effort="Orta", impact="Yüksek",
-        source=(f"Kendi oyun deneyimim ({PLAYED_TO_LEVEL}. seviyeye kadar) · Match Villains (Good Job Games) · "
-                "Royal Match, Royal Kingdom (Dream Games) · Manor Cafe"),
         sequence=True,
         images=[("market-stage-1.jpg", "KONSEPT", "1 · Bakkal", True),
                 ("market-stage-2.jpg", "KONSEPT", "2 · Market", True),
@@ -104,7 +100,6 @@ RECS: list[dict] = [
         ],
         metrics=["A/B testinde oturum süresi", "Oturum başına oynanan seviye sayısı", "D1 retention"],
         effort="Düşük", impact="Orta",
-        source=f"Kendi oyun deneyimim ({PLAYED_TO_LEVEL}. seviyeye kadar) · App Store sayfasındaki slogan",
     ),
 ]
 
@@ -118,7 +113,7 @@ for i, r in enumerate(RECS, start=1):
     with st.container(key=f"rec-{i}"):
         if r.get("sequence"):
             # Progression: text on top, then the stages left -> right with arrows between them.
-            C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"], r["source"])
+            C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"])
             with st.container(key=f"strip-{i}"):
                 C.shot_tag("KONSEPT · İLERLEME", concept=True)
                 spec = [.5] + [x for k in range(len(imgs)) for x in ([.22, 1] if k else [1])] + [.5]
@@ -135,7 +130,7 @@ for i, r in enumerate(RECS, start=1):
         text_col, img_col = (st.columns([1.35, 1] if len(imgs) > 1 else [2.8, 1], gap="large",
                                         vertical_alignment="center") if imgs else (st.container(), None))
         with text_col:
-            C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"], r["source"])
+            C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"])
         if img_col is not None:
             with img_col:
                 for col, (file, tag, caption, concept) in zip(st.columns(len(imgs)), imgs):
