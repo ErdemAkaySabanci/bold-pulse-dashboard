@@ -159,7 +159,7 @@ RECS: list[dict] = [
             ("Industry benchmark",
              "En çok kazanan 500 oyunun <b>%70</b>'inde kozmetik/kilit açma satışı var (Appfigures, "
              "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. Sepet özelleştirme bu boşluğu "
-             "kapatır. Ayrıntı: Market Context sayfası."),
+             "kapatır. Ayrıntı: Sektörle Kıyas sayfası."),
         ],
         metrics=["Yeni sekmenin açılma oranı", "D7 retention", "Coin harcama oranı (özelleştirme varyantında)",
                  "Ayarlara erişimle ilgili destek talebi (artmamalı)"],

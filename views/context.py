@@ -1,15 +1,15 @@
-"""Market Context (English): Appfigures industry benchmark next to Market Match's own store data.
+"""Sektörle Kıyas: Appfigures industry benchmark next to Market Match's own store data.
 
 Rules: every industry figure comes from data/industry_benchmark.csv (typed in verbatim, with the
-report's printed page number); industry data is drawn in neutral grey and labelled "Industry
-benchmark", Market Match data in brand red and labelled "Market Match reviews".
+report's printed page number); industry data is drawn in neutral grey and labelled "Sektör verisi",
+Market Match data in brand red and labelled "Market Match".
 """
 import streamlit as st
 
 from src import insights
 from src import metrics as M
 from src.data import load
-from src.ui import charts, components as C
+from src.ui import charts, components as C, fmt
 
 B = load.benchmark()
 R = load.ratings()
@@ -26,25 +26,32 @@ def fig(section: str, item: str) -> tuple[float, int]:
 
 
 def pct(v: float) -> str:
-    return f"{v:g}%"
+    """Industry percentages are whole numbers in the report: 70 -> '%70', 16.3 -> '%16,3'."""
+    return fmt.pct(v / 100, 0 if float(v).is_integer() else 1)
+
+
+def chg(v: float) -> str:
+    """Signed change: 47.1 -> '+%47,1', -6.1 -> '−%6,1'."""
+    return ("+" if v > 0 else "−" if v < 0 else "") + f"%{fmt.num(abs(v), 1)}"
 
 
 C.hero(
-    "Market Context",
-    "How Market Match compares with the industry",
-    "Selected figures from Appfigures' <b>Mobile Games in 2025</b> report (2024 data), set next to Market "
-    "Match's own App Store and Google Play ratings and reviews. Grey always means <b>Industry benchmark</b>; "
-    "red always means <b>Market Match reviews</b>.",
+    "Sektörle Kıyas",
+    "Market Match sektöre göre nerede duruyor?",
+    "Appfigures'ın <b>Mobile Games in 2025</b> raporundan (2024 verisi) seçilmiş rakamlar, Market Match'in "
+    "kendi App Store ve Google Play puan ve yorumlarının yanında. Grafiklerde <b>gri</b> her zaman "
+    "<b>sektör verisi</b>, <b>kırmızı</b> her zaman <b>Market Match</b> demek.",
 )
 puzzle, p_puzzle = fig("genre_share", "Puzzle")
-C.note(f"<b>Read with care.</b> The industry benchmark covers the top 500 and top 1,000 earning games of 2024, "
-       f"mostly large and mature titles; its revenue figures are gross in-app purchase spending and exclude "
-       f"ad revenue ({SRC}, p. 41). Market Match launched in 2026, and its data here are store ratings and "
-       f"written reviews: what players say, not what they do. For context, Puzzle is {pct(puzzle)} of the top "
-       f"1,000 earning games, the only Casual genre to rival Mid-Core ({SRC}, p. {p_puzzle}, 35).")
+C.note(f"<b>Dikkatle okuyun.</b> Sektör verisi 2024'ün en çok kazanan 500 ve 1.000 oyununu kapsıyor; bunlar "
+       f"çoğunlukla büyük ve olgun oyunlar. Gelir rakamları uygulama içi satın almalardan gelen brüt harcama, "
+       f"reklam geliri dahil değil ({SRC}, s. 41). Market Match ise 2026'da çıkmış yeni bir oyun ve buradaki "
+       f"verisi mağaza puanları ve yazılı yorumlar: oyuncuların ne söylediği, ne yaptığı değil. Bağlam için: "
+       f"Puzzle, en çok kazanan 1.000 oyunun {pct(puzzle)}'ü ve Mid-Core ile yarışabilen tek Casual tür "
+       f"({SRC}, s. {p_puzzle}, 35).")
 
 # ---------------------------------------------------------------- monetization
-# Market Match column: my play-through to level 84 and the store reviews ("Not observed" is not "absent").
+# Market Match column: my play-through to level 84 and the store reviews ("Gözlenmedi" is not "yok").
 STATUS = {
     "Consumables/Currency via IAP": "present",       # boosters and coins sold in the Shop
     "Limited-Time Events/Offers": "present",         # "Limited Deal" (80% off) and live events
@@ -53,16 +60,32 @@ STATUS = {
     "Ad-Free Paid Version": "present",               # ad-free play is part of the Starter Bag
     "Rewarded Video Ads": "present",                 # "Clear 3 items" when the tray is full, "+1 Life"
 }
-mon = B[B["section"] == "monetization"]
+# Turkish display names; the report's own wording stays in the hover and in the data table.
+TR = {
+    "Consumables/Currency via IAP": "Tüketilebilir ürün ve para satışı",
+    "Limited-Time Events/Offers": "Sınırlı süreli etkinlik ve teklifler",
+    "Premium Currency via IAP": "Premium para birimi satışı",
+    "IAP Bundles/Packages": "Paket satışları",
+    "Unlocks/Cosmetics via IAP": "Kilit açma ve kozmetik satışı",
+    "Rewarded Video Ads": "Ödüllü video reklam",
+    "Battle/Season Passes": "Sezon kartı (battle pass)",
+    "Gacha/Loot Box Mechanics": "Gacha / sandık mekaniği",
+    "In-Game Advertising": "Oyun içi reklam",
+    "Subscriptions/VIP Membership": "Abonelik / VIP üyelik",
+    "Brand Sponsorships": "Marka sponsorlukları",
+    "Ad-Free Paid Version": "Ücretli reklamsız sürüm",
+    "Player Trading/Marketplace": "Oyuncular arası ticaret",
+    "Other (Merch, etc.)": "Diğer (ürün satışı vb.)",
+}
+mon = B[B["section"] == "monetization"].copy()
+mon["label"] = mon["item"].map(TR).fillna(mon["item"])
 status = {i: STATUS.get(i, "not_observed") for i in mon["item"]}
-cohort = mon["cohort"].iloc[0]
 
-C.section("Monetization: what top earners use, and what Market Match has",
-          "Bars show how many of the top 500 earning games use each monetization type. The right-hand "
-          "column shows whether it was seen in Market Match.",
-          source=(f"Industry benchmark: {cohort.lower()}, 2024 · {SRC}, p. {int(mon['page'].iloc[0])} · "
-                  "Market Match: my play-through to level 84 and the store reviews"),
-          source_label="Data")
+C.section("Para kazanma: en çok kazananlar ne kullanıyor, Market Match'te ne var?",
+          "Gri çubuklar, en çok kazanan 500 oyunun yüzde kaçında o yöntemin bulunduğunu gösteriyor. Sağdaki "
+          "sütun, aynı yöntemin Market Match'te görülüp görülmediğini söylüyor.",
+          source=(f"Sektör verisi: en çok kazanan 500 oyun, 2024 · {SRC}, s. {int(mon['page'].iloc[0])} · "
+                  "Market Match: 84. seviyeye kadar kendi oyun deneyimim ve mağaza yorumları"))
 charts.show(charts.monetization_benchmark(mon, status), key="monetization")
 
 n_crit = int(rv["rating_bucket"].isin(["negative", "neutral"]).sum())
@@ -73,38 +96,37 @@ rewarded, _ = fig("monetization", "Rewarded Video Ads")
 ingame, _ = fig("monetization", "In-Game Advertising")
 cosm, _ = fig("monetization", "Unlocks/Cosmetics via IAP")
 C.takeaways([
-    (f"The must-haves are in place: consumables and limited-time offers are each used by {pct(cons)} of the "
-     f"top 500 (p. {p30}), and Market Match has both (boosters and coins, the 80%-off Limited Deal)."
-     if cons == lto else
-     f"The must-haves are in place: consumables ({pct(cons)}) and limited-time offers ({pct(lto)}) are near "
-     f"universal in the top 500 (p. {p30}), and Market Match has both."),
-    f"Rewarded video ads are used by {pct(rewarded)} of the top 500, in-game advertising by {pct(ingame)} "
-    f"(p. {p30}). Market Match already has both: rewarded videos for an extra chance when the tray is full "
-    "(“Clear 3 items”) and for “+1 Life”, plus end-of-level ads. Ads are still its most common complaint: "
-    f"<b>{n_ads} of {n_crit}</b> players who gave 1–3★ mention them.",
-    f"Unlocks/cosmetics are sold by {pct(cosm)} of the top 500 (p. {p30}) but were not seen in Market Match, "
-    "where coins go to lives and extra chances only. This is the clearest gap, and the case for cart "
-    "customization (Recommendation 5).",
-    "Limits: the report does not define “In-Game Advertising”, and this is a presence check, not revenue "
-    "impact. “Not observed” means not seen in my play-through, not proven absent.",
-], title="What it says")
+    f"Olmazsa olmazlar yerinde: tüketilebilir ürün satışı ({pct(cons)}) ve sınırlı süreli teklifler "
+    f"({pct(lto)}) en çok kazanan 500 oyunun {'hepsinde' if min(cons, lto) == 100 else 'neredeyse hepsinde'} var "
+    f"(s. {p30}); Market Match'te de ikisi var "
+    "(booster ve coin satışı, %80 indirimli Limited Deal).",
+    f"Ödüllü video reklam en çok kazananların {pct(rewarded)}'ında, oyun içi reklam {pct(ingame)}'unda var "
+    f"(s. {p30}). Market Match ikisini de kullanıyor: tepsi dolunca “Clear 3 items” ve “+1 Life” için ödüllü "
+    f"video, bölüm sonlarında ise reklam. Reklam yine de en sık şikâyet: 1–3★ veren <b>{n_crit} oyuncunun "
+    f"{n_ads}</b>'sı reklamdan bahsediyor.",
+    f"Kilit açma ve kozmetik satışı en çok kazananların {pct(cosm)}'inde var (s. {p30}), Market Match'te "
+    "görülmedi; coin sadece can ve ekstra şans için harcanıyor. En net boşluk bu ve 5. önerideki sepet "
+    "özelleştirme fikrini destekliyor.",
+    "Sınırlar: rapor “oyun içi reklam”ı tanımlamıyor; bu karşılaştırma gelir etkisini değil, sadece var/yok "
+    "durumunu gösteriyor. “Gözlenmedi”, oynadığım kısımda görmediğim anlamına geliyor, kesin yok demek değil.",
+])
 
 # ---------------------------------------------------------------- markets
-EN = {"us": "United States", "jp": "Japan", "de": "Germany", "nl": "Netherlands", "mx": "Mexico",
-      "tr": "Turkey", "au": "Australia", "tw": "Taiwan", "br": "Brazil"}
 yoy = B[B["section"] == "spend_yoy"].set_index("item")
 both = [c for c in yoy.index if c in countries.index and countries.loc[c, "n"] >= M.DIRECTIONAL_N]
 pts = countries.loc[both, ["n", "avg_rating"]].assign(
     spend_yoy=yoy.loc[both, "value"].values, page=yoy.loc[both, "page"].values,
-    name=[EN.get(c, c.upper()) for c in both]).reset_index()
+    name=[fmt.country(c) for c in both]).reset_index()
 
-C.section("Markets: where spending is growing, and how Market Match is rated there",
-          "Each dot is a country. Left to right: how mobile game spending changed in 2024. Bottom to top: "
-          "Market Match's App Store average. Bigger dot, more Market Match ratings. Only countries that "
-          f"appear in the report and have {M.DIRECTIONAL_N}+ Market Match ratings are shown.",
-          source=(f"Industry benchmark: change in consumer spending, 2024 vs 2023 · {SRC}, p. 7, 23, 24 · "
-                  f"Market Match reviews: App Store ratings, {len(pts)} countries"),
-          source_label="Data")
+C.section("Ülkeler: harcama nerede büyüyor, Market Match orada ne kadar seviliyor?",
+          "Her nokta bir ülke. <b>Soldan sağa:</b> o ülkede mobil oyunlara yapılan harcama 2024'te ne kadar "
+          "değişti (sağa gittikçe pazar daha hızlı büyüyor). <b>Aşağıdan yukarıya:</b> Market Match'in o "
+          "ülkedeki App Store puanı (kesikli çizginin üstü, oyunun genel ortalamasından iyi). <b>Nokta "
+          "büyüklüğü:</b> o ülkeden gelen Market Match puanı sayısı. Renkli bölgeler, noktanın düştüğü yerin ne "
+          "anlama geldiğini söylüyor.",
+          source=(f"Sektör verisi: tüketici harcamasındaki değişim, 2024'e karşı 2023 · {SRC}, s. 7, 23, 24 · "
+                  f"Market Match: App Store puanları, hem raporda hem bizde {M.DIRECTIONAL_N}+ puanı olan "
+                  f"{len(pts)} ülke"))
 charts.show(charts.market_context_scatter(pts, store_avg), key="market_context")
 
 
@@ -124,28 +146,34 @@ spd_world, p_w = fig("spend_per_download", "world")
 spd_us, p_u = fig("spend_per_download", "us")
 written_jp = int(((rv["store"] == "app_store") & (rv["country"] == "jp")).sum())
 C.takeaways([
-    f"<b>United States.</b> {us_n / countries['n'].sum():.1%} of Market Match's App Store ratings come from the "
-    f"US, at {us_avg:.2f} ★, the highest of the large markets. The US is also the largest market by spending "
-    f"(${us_spend:g}B, p. {p_us}) and spends ${spd_us:.2f} per download against ${spd_world:.2f} worldwide "
-    f"(p. {p_w}–{p_u}). Protect the US experience, and read A/B tests there first.",
-    f"<b>Japan.</b> The #3 market by spending (${jp_spend:g}B, p. {p_jp}) shrank "
-    f"{abs(yoy.loc['jp', 'value']):g}% in 2024 (p. {int(yoy.loc['jp', 'page'])}), and it is Market Match's "
-    f"lowest-rated large market ({jp_avg:.2f} ★ from {jp_n} ratings). With only {written_jp} written reviews, "
-    "both 5★, the reason is unknown: check translation, difficulty and level progress there before spending "
-    "on user acquisition.",
-    f"<b>Growth markets.</b> Mexico (+{yoy.loc['mx', 'value']:g}%) and Turkey (+{yoy.loc['tr', 'value']:g}%) are "
-    f"among the fastest-growing markets (p. {int(yoy.loc['mx', 'page'])}), and both rate Market Match at or "
-    f"near the store average of {store_avg:.2f} ★ ({mx_avg:.2f} ★ from {mx_n} and {tr_avg:.2f} ★ from {tr_n} "
-    "ratings). Brazil "
-    f"(+{yoy.loc['br', 'value']:g}%) also rates it highly, but with only {br_n} ratings. Candidates for small "
-    "local test campaigns, not yet conclusions.",
-    "Limits: ratings are not downloads, and only the App Store publishes per-country rating counts.",
-], title="What it says")
+    f"<b>ABD (en büyük nokta, sıfır çizgisinin üstünde: harcama {chg(yoy.loc['us', 'value']) if abs(yoy.loc['us', 'value']) >= 0.1 else '+%' + fmt.num(yoy.loc['us', 'value'], 2)} ile yerinde sayıyor).</b> "
+    f"Market Match'in App Store puanlarının "
+    f"{fmt.pct(us_n / countries['n'].sum())}'i ABD'den geliyor ve ortalama {fmt.num(us_avg, 2)} ★; büyük "
+    f"pazarlar arasında en yüksek. ABD harcamada da 1. sırada ({fmt.num(us_spend, 1)} milyar $, s. {p_us}) ve "
+    f"indirme başına {fmt.num(spd_us, 2)} $ harcıyor; dünya ortalaması {fmt.num(spd_world, 2)} $ "
+    f"(s. {p_w}–{p_u}). ABD deneyimi korunmalı, A/B testleri önce burada okunmalı.",
+    f"<b>Japonya (sol alt, “dikkat” bölgesi).</b> Harcamada 3. büyük pazar ({fmt.num(jp_spend, 1)} milyar $, "
+    f"s. {p_jp}) ama 2024'te {chg(yoy.loc['jp', 'value'])} küçüldü (s. {int(yoy.loc['jp', 'page'])}). Market "
+    f"Match'in de en düşük puanlı büyük pazarı ({fmt.num(jp_avg, 2)} ★, {jp_n} puan). Sadece {written_jp} yazılı "
+    "yorum var ve ikisi de 5★, yani nedeni bilinmiyor. Buraya reklam bütçesi ayırmadan önce çeviri, zorluk ve "
+    "seviye ilerlemesine bakılmalı.",
+    f"<b>Meksika (sağ üst, “fırsat” bölgesi) ve Türkiye (tam ortalama çizgisinde).</b> En hızlı büyüyen "
+    "pazarlar arasındalar "
+    f"(Meksika {chg(yoy.loc['mx', 'value'])}, Türkiye {chg(yoy.loc['tr', 'value'])}, s. "
+    f"{int(yoy.loc['mx', 'page'])}). Meksika Market Match'e ortalamanın üstünde, Türkiye ortalamaya çok yakın "
+    "puan veriyor "
+    f"(Meksika {fmt.num(mx_avg, 2)} ★ / {mx_n} puan, Türkiye {fmt.num(tr_avg, 2)} ★ / {tr_n} puan). Brezilya da "
+    f"hızlı büyüyor ({chg(yoy.loc['br', 'value'])}) ve puanı yüksek, ama sadece {br_n} puan olduğu için grafikte "
+    "yok. Küçük, yerel test kampanyaları için aday pazarlar; henüz kesin sonuç değil.",
+    f"<b>Almanya ve Hollanda (sağ alt).</b> Pazar büyüyor ama Market Match buralarda ortalamanın altında "
+    f"({fmt.num(mm('de')[1], 2)} ★ ve {fmt.num(mm('nl')[1], 2)} ★); nedeni araştırılmaya değer.",
+    "Sınırlar: puan sayısı indirme sayısı değil ve ülke bazında puan sayısını sadece App Store yayınlıyor.",
+])
 
-with st.expander("All industry figures used on this page"):
-    st.dataframe(B.rename(columns={"section": "Section", "item": "Item", "value": "Value", "unit": "Unit",
-                                   "page": "Report page", "pdf_page": "PDF page", "year": "Year",
-                                   "cohort": "Games covered"}),
+with st.expander("Bu sayfada kullanılan bütün sektör rakamları"):
+    st.dataframe(B.rename(columns={"section": "Bölüm", "item": "Kalem (rapordaki adı)", "value": "Değer",
+                                   "unit": "Birim", "page": "Rapor sayfası", "pdf_page": "PDF sayfası",
+                                   "year": "Yıl", "cohort": "Kapsanan oyunlar"}),
                  hide_index=True, width="stretch")
-    st.caption(f"Source: {load.BENCHMARK_SOURCE}. Figures typed in verbatim from the report; charts are "
-               "redrawn, not copied.")
+    st.caption(f"Kaynak: {load.BENCHMARK_SOURCE}. Rakamlar rapordan birebir aktarıldı; grafikler kopyalanmadı, "
+               "yeniden çizildi.")
