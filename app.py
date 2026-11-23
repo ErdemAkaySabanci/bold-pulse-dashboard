@@ -41,14 +41,14 @@ if st.query_params.get("lang") != st.session_state["lang"]:
 
 pages = {
     "Dashboard": [
-        st.Page("views/overview.py", title=T("Genel Bakış", "Overview"), icon=":material/space_dashboard:",
-                default=True),
+        # The recommendations are the heart of the dashboard, so they open first.
+        st.Page("views/recommendations.py", title=T("Benim Ürün Önerilerim", "My Recommendations"),
+                icon=":material/lightbulb:", default=True),
+        st.Page("views/overview.py", title=T("Genel Bakış", "Overview"), icon=":material/space_dashboard:"),
+        st.Page("views/voice.py", title=T("Halkın Nabzı", "Player Pulse"), icon=":material/forum:"),
         st.Page("views/markets.py", title=T("Pazarlar & Platformlar", "Markets & Platforms"),
                 icon=":material/public:"),
         st.Page("views/context.py", title=T("Sektörle Kıyas", "Industry Benchmark"), icon=":material/insights:"),
-        st.Page("views/voice.py", title=T("Halkın Nabzı", "Player Pulse"), icon=":material/forum:"),
-        st.Page("views/recommendations.py", title=T("Benim Ürün Önerilerim", "My Recommendations"),
-                icon=":material/lightbulb:"),
         st.Page("views/explorer.py", title=T("Yorum Database'i", "Review Database"),
                 icon=":material/manage_search:"),
     ],

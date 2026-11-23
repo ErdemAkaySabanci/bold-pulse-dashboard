@@ -39,6 +39,18 @@ def test_T_picks_language(lang):
 
 
 @pytest.mark.parametrize("code", ["tr", "en"])
+def test_overview_renders_through_navigation(code):
+    """Overview uses st.page_link, so it only works inside the app's navigation (not stand-alone)."""
+    from streamlit.testing.v1 import AppTest
+    at = AppTest.from_file(str(ROOT / "app.py"), default_timeout=90)
+    at.session_state["lang"] = code
+    at.run()
+    at.switch_page("views/overview.py").run()
+    assert not at.exception, [e.value for e in at.exception]
+    assert any("p-find" in m.value for m in at.markdown)       # the 3 key findings are on screen
+
+
+@pytest.mark.parametrize("code", ["tr", "en"])
 @pytest.mark.parametrize("page", PAGES)
 def test_pages_render_in_both_languages(page, code):
     from streamlit.testing.v1 import AppTest
