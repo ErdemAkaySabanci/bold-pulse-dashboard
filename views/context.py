@@ -127,11 +127,11 @@ C.takeaways([
       f"“+1 Life”, and ads at the end of levels. Ads are still the most common complaint: <b>{n_ads} of the "
       f"{n_crit}</b> players who gave 1–3★ mention them."),
     T(f"Kilit açma ve kozmetik satışı en çok kazananların {pct(cosm)}'inde var (s. {p30}), Market Match'te "
-      "görülmedi; coin sadece can ve ekstra şans için harcanıyor. En net boşluk bu ve 5. önerideki sepet "
-      "özelleştirme fikrini destekliyor.",
+      "görülmedi; coin sadece can ve ekstra şans için harcanıyor. En net boşluk bu; 3. önerideki My Market, "
+      "ileride kozmetik satışına zemin olarak bu boşluğu kapatabilir.",
       f"Unlocks and cosmetics are sold by {pct(cosm)} of the top earners (p. {p30}) but were not seen in Market "
-      "Match, where coins only go to lives and extra chances. This is the clearest gap, and it supports the "
-      "cart-customization idea in Recommendation 5."),
+      "Match, where coins only go to lives and extra chances. This is the clearest gap; My Market in "
+      "Recommendation 3 could close it later by laying the ground for cosmetic sales."),
     T("Sınırlar: rapor “oyun içi reklam”ı tanımlamıyor; bu karşılaştırma gelir etkisini değil, sadece var/yok "
       "durumunu gösteriyor. “Gözlenmedi”, oynadığım kısımda görmediğim anlamına geliyor, kesin yok demek değil.",
       "Limits: the report does not define “In-Game Advertising”, and this comparison shows presence only, not "

@@ -210,23 +210,12 @@ def official_check(rows: list[dict]) -> None:
     _md(f'<div class="p-check"><span class="h">{"✓" if allok else "!"} {head}</span>{"".join(items)}</div>')
 
 
-EFFORT = {"Düşük": "green", "Orta": "orange", "Yüksek": "red"}   # low effort is the good end
-IMPACT = {"Yüksek": "brand", "Orta": "orange", "Düşük": "muted"}
-LEVEL_EN = {"Düşük": "Low", "Orta": "Medium", "Yüksek": "High"}
 ACTION_LABELS = ("Öneri", "Recommendation")   # the highlighted row of a recommendation card
 
 
-def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[str],
-                effort: str, impact: str) -> None:
+def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[str]) -> None:
     """Text side of a product recommendation card. `rows` are (label, html); a row labelled
-    'Öneri' is highlighted. Effort/impact badges sit next to the number."""
-    t = tok()
-
-    def badge(name: str, level: str, color_key: str) -> str:
-        c = t[color_key]
-        shown = T(level, LEVEL_EN.get(level, level))
-        return (f'<span class="lvl" style="--c:{c};--bg:{c}1F">{escape(name)}: '
-                f'<b>{escape(shown)}</b></span>')
+    'Öneri' / 'Recommendation' is highlighted."""
 
     body = "".join(
         f'<div class="row{" action" if label in ACTION_LABELS else ""}"><span class="l">{escape(label)}</span>'
@@ -234,9 +223,7 @@ def product_rec(n: int, title: str, rows: list[tuple[str, str]], metrics: list[s
     chips = "".join(f"<span>{escape(m)}</span>" for m in metrics)
     body += (f'<div class="row"><span class="l">{T("Nasıl ölçülür", "How to measure")}</span>'
              f'<span class="metrics">{chips}</span></div>')
-    _md(f'<div class="p-prec"><div class="top"><span class="k">{T("ÖNERİ", "RECOMMENDATION")} {n}</span>'
-        f'{badge(T("Efor", "Effort"), effort, EFFORT.get(effort, "muted"))}'
-        f'{badge(T("Etki", "Impact"), impact, IMPACT.get(impact, "muted"))}</div>'
+    _md(f'<div class="p-prec"><div class="top"><span class="k">{T("ÖNERİ", "RECOMMENDATION")} {n}</span></div>'
         f'<div class="t">{escape(title)}</div>{body}</div>')
 
 

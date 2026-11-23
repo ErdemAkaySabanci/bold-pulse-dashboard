@@ -95,7 +95,6 @@ RECS: list[dict] = [
                  T("Booster paketlerinin satın alma oranı", "Purchase rate of booster bundles"),
                  T("Booster kullananlarla kullanmayanların retention farkı",
                    "Retention of booster users vs non-users")],
-        effort="Düşük", impact="Yüksek",
         images=[("booster-tutorial-concept.jpg", CONCEPT,
                  T("Zorunlu Undo eğitimi mockup'ı", "Forced Undo tutorial mockup"), True)],
     ),
@@ -137,7 +136,6 @@ RECS: list[dict] = [
                  T("Oturum başına oynanan seviye sayısı", "Levels played per session"),
                  T("Bir sonraki aşamaya yaklaşan oyuncuların churn oranı",
                    "Churn of players close to the next stage")],
-        effort="Orta", impact="Yüksek",
         sequence=True,
         images=[("market-stage-1.jpg", CONCEPT, T("1 · Bakkal", "1 · Corner shop"), True),
                 ("market-stage-2.jpg", CONCEPT, T("2 · Market", "2 · Supermarket"), True),
@@ -147,6 +145,53 @@ RECS: list[dict] = [
                      [("journey-stage-1.jpg", T("Order Journey sahneleri (mevcut)", "Order Journey scenes (existing)")),
                       ("journey-stage-2.jpg", T("Seviye 30 · Lunapark", "Level 30 · Amusement park")),
                       ("journey-stage-3.jpg", T("Seviye 60 · Sinema", "Level 60 · Cinema"))])],
+    ),
+    dict(
+        title=T("My Market: açılan kategorilerle dolan bir market",
+                "My Market: a store that fills up with every category you unlock"),
+        rows=[
+            (FINDING,
+             T("Bölüm geçtikçe yeni ürün kategorileri açılıyor ve her seviye sonunda bir kategori ilerlemesi "
+               "gösteriliyor (ör. <b>“Personal Care 2/20”</b>). Ama oyuncu topladıklarını hiçbir yerde göremiyor: "
+               "bu ilerleme bir sonraki seviyeye geçince ekrandan kayboluyor ve hiçbir şeye dönüşmüyor.",
+               "New item categories unlock as levels are cleared, and every level ends with category progress "
+               "(e.g. <b>“Personal Care 2/20”</b>). But players can't see what they have collected anywhere: the "
+               "progress disappears when the next level starts and never turns into anything.")),
+            (COMPETITOR,
+             T("<b>Manor Cafe</b>'de oyuncu, ilerledikçe kafesini kaydırılabilir bir sahnede dolduruyor ve "
+               "özelleştiriyor; ilerleme somut bir mekâna dönüşüyor.",
+               "In <b>Manor Cafe</b> the player fills and customizes their cafe in a scrollable scene as they "
+               "progress, so progress turns into a real place.")),
+            (REC,
+             T("Alt menüye bir <b>My Market</b> sekmesi eklensin: başta boş, Walmart tarzı reyonları olan, "
+               "kaydırılabilir bir market. Her kategorinin (içecekler, soslar, kişisel bakım, dondurma …) kendi "
+               "reyonu olsun; seviye sonundaki kategori çubuğu doldukça o reyonun rafları dolsun, yeni kategori "
+               "açıldıkça yeni bir reyon açılsın. Böylece her seviye, oyuncunun kendi marketine eklenen somut bir "
+               "parça olur. Sekmeye yer açmak için Ayarlar üst bardaki dişli ikonuna taşınabilir.",
+               "Add a <b>My Market</b> tab to the bottom menu: a scrollable store with Walmart-style aisles that "
+               "starts empty. Each category (drinks, sauces, personal care, ice cream …) gets its own aisle; as the "
+               "end-of-level category bar fills, that aisle's shelves fill, and each newly unlocked category opens a "
+               "new aisle. Every level becomes a visible piece of the player's own store. To make room for the tab, "
+               "Settings can move to a gear icon in the top bar.")),
+            (T("Sektör verisi", "Industry benchmark"),
+             T("En çok kazanan 500 oyunun <b>%70</b>'inde kozmetik/kilit açma satışı var (Appfigures, "
+               "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. My Market, ileride reyon ve vitrin "
+               "süsleme gibi kozmetik satışlarına da zemin olur. Ayrıntı: Sektörle Kıyas sayfası.",
+               "<b>70%</b> of the top 500 earning games sell cosmetics or unlocks (Appfigures, <i>Mobile Games in "
+               "2025</i>, p. 30); none were seen in Market Match. My Market also lays the ground for cosmetic sales "
+               "later, such as aisle and shop-window decorations. Details: Industry Benchmark page.")),
+        ],
+        metrics=[T("My Market sekmesinin açılma oranı", "Open rate of the My Market tab"),
+                 T("Kategori tamamlama oranı", "Category completion rate"), "D7 / D30 retention",
+                 T("Oturum başına oynanan seviye sayısı", "Levels played per session")],
+        sequence=True,
+        images=[],
+        strips_alt=[(T("ŞU AN → KONSEPT · MY MARKET", "TODAY → CONCEPT · MY MARKET"),
+                     [("collection-progress.jpg", T("Şu an: seviye sonunda kategori ilerlemesi",
+                                                    "Today: category progress at level end")),
+                      ("my-market-tab.jpg", T("Ana ekranda yeni My Market sekmesi", "New My Market tab on Home")),
+                      ("my-market-store.jpg", T("My Market: kategorilerle dolan market",
+                                                "My Market: the store fills category by category"))])],
     ),
     dict(
         title=T("Malzemeye göre eşleşme sesleri", "Material-based match sounds"),
@@ -179,7 +224,6 @@ RECS: list[dict] = [
         ],
         metrics=[T("A/B testinde oturum süresi", "Session length in the A/B test"),
                  T("Oturum başına oynanan seviye sayısı", "Levels played per session"), "D1 retention"],
-        effort="Düşük", impact="Orta",
     ),
     dict(
         title=T("Reklam akışını oyuncuyu kaçırmayacak şekilde yeniden ayarla",
@@ -212,53 +256,6 @@ RECS: list[dict] = [
                  T("Oturum başına reklam geliri", "Ad revenue per session"),
                  T("Reklamsız paket sahiplerinde reklam gösterimi (0 olmalı)",
                    "Ad impressions for no-ads pack owners (should be 0)")],
-        effort="Orta", impact="Yüksek",
-    ),
-    dict(
-        title=T("Ayarları dişli ikonuna taşı, sekmeyi koleksiyon marketine ver",
-                "Move Settings to a gear icon and turn the tab into a collection store"),
-        rows=[
-            (FINDING,
-             T("Alt menüdeki 5 sekmeden biri <b>Ayarlar</b>. İçinde sadece müzik, ses, titreşim ve ipucu anahtarları, "
-               "bildirim ayarı, destek ve yasal linkler var. Sık açılmayan bir ekran, navigasyonun en değerli "
-               "alanlarından birini kaplıyor. Ayrıca her seviye bir <b>koleksiyon ilerlemesi</b> veriyor (Drinks 1/4, "
-               "Sauces 1/10 gibi), ama bu koleksiyonu gösteren bir ekran yok.",
-               "One of the 5 bottom-menu tabs is <b>Settings</b>. It only holds music, sound, vibration and hint "
-               "switches, a notification setting, support and legal links. A rarely opened screen takes up one of "
-               "the most valuable spots in the navigation. Every level also gives <b>collection progress</b> "
-               "(e.g. Drinks 1/4, Sauces 1/10), but no screen shows that collection.")),
-            (COMPETITOR,
-             T("<b>Manor Cafe</b>'de oyuncu, ilerledikçe kafesini kaydırılabilir bir sahnede dolduruyor ve "
-               "özelleştiriyor.",
-               "In <b>Manor Cafe</b> the player fills and customizes their cafe in a scrollable scene as they "
-               "progress.")),
-            (REC,
-             T("Ayarlar üst bardaki bir <b>dişli ikonuna</b> taşınsın. Boşalan sekmede, başta boş, "
-               "<b>kaydırılabilir bir market</b> açılsın (Walmart tarzı reyonlar). Oyuncu ilerledikçe açılan yeni "
-               "ürünler (dondurma, cips, içecekler …) ve tamamlanan koleksiyonlar bu raflara dolsun; oyuncu ne kadar "
-               "ilerlediğini kendi dolan marketinde görsün. <b>Alternatif olarak</b> bu sekme, 2. önerideki market "
-               "aşamalarını gösteren bir <b>ilerleme haritası</b> ya da maskot sepetin coin'le "
-               "<b>özelleştirilebildiği</b> bir ekran da olabilir.",
-               "Move Settings to a <b>gear icon</b> in the top bar. Use the freed tab for a <b>scrollable store</b> "
-               "that starts empty (Walmart-style aisles). New items unlocked along the way (ice cream, crisps, "
-               "drinks …) and completed collections fill its shelves, so players see how far they have come in their "
-               "own filling store. <b>Alternatively</b>, the tab could be a <b>progress map</b> of the market stages "
-               "from Recommendation 2, or a screen where players <b>customize</b> the mascot cart with coins.")),
-            (T("Sektör verisi", "Industry benchmark"),
-             T("En çok kazanan 500 oyunun <b>%70</b>'inde kozmetik/kilit açma satışı var (Appfigures, "
-               "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. Koleksiyon marketi, ileride "
-               "kozmetik satışına da zemin olur. Ayrıntı: Sektörle Kıyas sayfası.",
-               "<b>70%</b> of the top 500 earning games sell cosmetics or unlocks (Appfigures, <i>Mobile Games in "
-               "2025</i>, p. 30); none were seen in Market Match. A collection store also lays the ground for "
-               "cosmetic sales later. Details: Industry Benchmark page.")),
-        ],
-        metrics=[T("Market sekmesinin açılma oranı", "Open rate of the store tab"),
-                 T("Koleksiyon tamamlama oranı", "Collection completion rate"), "D7 / D30 retention",
-                 T("Ayarlara erişimle ilgili destek talebi (artmamalı)",
-                   "Support requests about finding Settings (should not rise)")],
-        effort="Orta", impact="Orta",
-        images=[("settings-gear-concept.jpg", CONCEPT,
-                 T("Ayarlar üst barda dişli ikonunda", "Settings moved to a gear icon in the top bar"), True)],
     ),
 ]
 
@@ -274,7 +271,7 @@ for i, r in enumerate(RECS, start=1):
     with st.container(key=f"rec-{i}"):
         if r.get("sequence"):
             # Progression: text on top, then the stages left -> right with arrows between them.
-            C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"])
+            C.product_rec(i, r["title"], r["rows"], r["metrics"])
             strips = ([(T("KONSEPT · İLERLEME", "CONCEPT · PROGRESSION"), [(f, c) for f, _t, c, _k in imgs])]
                       + r.get("strips_alt", []))
             for s_no, (tag, shots) in enumerate(strips):
@@ -297,7 +294,7 @@ for i, r in enumerate(RECS, start=1):
         text_col, img_col = (st.columns([1.35, 1] if len(imgs) > 1 else [2.8, 1], gap="large",
                                         vertical_alignment="center") if imgs else (st.container(), None))
         with text_col:
-            C.product_rec(i, r["title"], r["rows"], r["metrics"], r["effort"], r["impact"])
+            C.product_rec(i, r["title"], r["rows"], r["metrics"])
         if img_col is not None:
             with img_col:
                 for col, (file, tag, caption, concept) in zip(st.columns(len(imgs)), imgs):
