@@ -22,14 +22,14 @@ CONCEPT = T("KONSEPT", "CONCEPT")
 C.hero(
     T("Benim Ürün Önerilerim", "My Product Recommendations"),
     T("Rakiplerden öğrenip Market Match!'e uyarlamak", "Learn from competitors, adapt it to Market Match!"),
-    T(f"Market Match!'i <b>{PLAYED_TO_LEVEL}. seviyeye</b> kadar oynadım. Oyun belirli bir oyuncu kitlesine "
-      "ulaştı ve yatırım aldı. Bence bu aşamada en makul yol sıfırdan fikir üretmek değil; türdeki rakiplerin "
-      "işe yaradığını kanıtlamış özelliklerinden hangilerinin örnek alınabileceğini ve Market Match!'e "
-      "<b>nasıl entegre edilebileceğini</b> göstermek.",
-      f"I played Market Match! up to <b>level {PLAYED_TO_LEVEL}</b>. The game has reached a real audience and "
-      "raised investment. At this stage I think the sensible path is not to invent ideas from scratch, but to "
-      "show which features have already proven themselves in competing games and <b>how they could be "
-      "integrated</b> into Market Match!."),
+    T("Market Match! belirli bir oyuncu kitlesine ulaştı ve yatırım aldı; büyümenin bir sonraki adımı, türde "
+      "kendini kanıtlamış özellikleri oyuna doğru şekilde uyarlamak. "
+      f"<b>{PLAYED_TO_LEVEL}. seviyeye</b> kadar oynadıktan sonra hazırladığım öneriler bu özelliklere ve "
+      "Market Match!'e <b>nasıl entegre edilebileceklerine</b> odaklanıyor.",
+      "Market Match! has reached a real audience and raised investment; the next step for growth is adapting "
+      "features that have proven themselves in the genre. The recommendations below, written after playing to "
+      f"<b>level {PLAYED_TO_LEVEL}</b>, focus on those features and <b>how they could be integrated</b> into "
+      "Market Match!."),
 )
 
 
