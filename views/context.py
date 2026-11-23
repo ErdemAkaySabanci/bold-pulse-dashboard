@@ -42,11 +42,9 @@ C.hero(
     T("Sektörle Kıyas", "Industry Benchmark"),
     T("Market Match sektöre göre nerede duruyor?", "Where does Market Match stand against the industry?"),
     T("Appfigures'ın <b>Mobile Games in 2025</b> raporundan (2024 verisi) seçilmiş rakamlar, Market Match'in "
-      "kendi App Store ve Google Play puan ve yorumlarının yanında. Grafiklerde <b>gri</b> her zaman "
-      "<b>sektör verisi</b>, <b>kırmızı</b> her zaman <b>Market Match</b> demek.",
+      "kendi App Store ve Google Play puan ve yorumlarının yanında.",
       "Selected figures from Appfigures' <b>Mobile Games in 2025</b> report (2024 data), set next to Market "
-      "Match's own App Store and Google Play ratings and reviews. In the charts <b>grey</b> always means "
-      "<b>industry data</b> and <b>red</b> always means <b>Market Match</b>."),
+      "Match's own App Store and Google Play ratings and reviews."),
 )
 puzzle, p_puzzle = fig("genre_share", "Puzzle")
 C.note(T(f"<b>Dikkatle okuyun.</b> Sektör verisi 2024'ün en çok kazanan 500 ve 1.000 oyununu kapsıyor; bunlar "

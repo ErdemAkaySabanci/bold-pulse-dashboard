@@ -215,40 +215,46 @@ RECS: list[dict] = [
         effort="Orta", impact="Yüksek",
     ),
     dict(
-        title=T("Ayarları dişli ikonuna taşı, sekmeyi ilerleme için kullan",
-                "Move Settings to a gear icon and use the tab for progress"),
+        title=T("Ayarları dişli ikonuna taşı, sekmeyi koleksiyon marketine ver",
+                "Move Settings to a gear icon and turn the tab into a collection store"),
         rows=[
             (FINDING,
              T("Alt menüdeki 5 sekmeden biri <b>Ayarlar</b>. İçinde sadece müzik, ses, titreşim ve ipucu anahtarları, "
                "bildirim ayarı, destek ve yasal linkler var. Sık açılmayan bir ekran, navigasyonun en değerli "
-               "alanlarından birini kaplıyor.",
+               "alanlarından birini kaplıyor. Ayrıca her seviye bir <b>koleksiyon ilerlemesi</b> veriyor (Drinks 1/4, "
+               "Sauces 1/10 gibi), ama bu koleksiyonu gösteren bir ekran yok.",
                "One of the 5 bottom-menu tabs is <b>Settings</b>. It only holds music, sound, vibration and hint "
                "switches, a notification setting, support and legal links. A rarely opened screen takes up one of "
-               "the most valuable spots in the navigation.")),
+               "the most valuable spots in the navigation. Every level also gives <b>collection progress</b> "
+               "(e.g. Drinks 1/4, Sauces 1/10), but no screen shows that collection.")),
+            (COMPETITOR,
+             T("<b>Manor Cafe</b>'de oyuncu, ilerledikçe kafesini kaydırılabilir bir sahnede dolduruyor ve "
+               "özelleştiriyor.",
+               "In <b>Manor Cafe</b> the player fills and customizes their cafe in a scrollable scene as they "
+               "progress.")),
             (REC,
-             T("Ayarlar üst bardaki bir <b>dişli ikonuna</b> taşınsın ve boşalan sekmeye iki seçenekten biri gelsin: "
-               "<b>İlerleme haritası</b>, yani 2. önerideki market aşamalarını (bakkal → market → lüks market) ve "
-               "bir sonraki aşamaya kalan seviyeyi gösteren bir sayfa; ya da <b>sepet özelleştirme</b>, yani maskot "
-               "alışveriş arabasının görünümünü coin'le değiştirme imkânı (coin'e can ve ekstra şans dışında yeni bir "
-               "harcama alanı açar). Hangisinin seçileceğine A/B testi karar versin.",
-               "Move Settings to a <b>gear icon</b> in the top bar and give the freed tab one of two options: a "
-               "<b>progress map</b> showing the market stages from Recommendation 2 (corner shop → supermarket → "
-               "luxury market) and the levels left to the next stage; or <b>cart customization</b>, letting players "
-               "change the mascot cart's look with coins (a new way to spend coins beyond lives and extra chances). "
-               "Let an A/B test decide which one.")),
+             T("Ayarlar üst bardaki bir <b>dişli ikonuna</b> taşınsın. Boşalan sekmede, başta boş, "
+               "<b>kaydırılabilir bir market</b> açılsın (Walmart tarzı reyonlar). Oyuncu ilerledikçe açılan yeni "
+               "ürünler (dondurma, cips, içecekler …) ve tamamlanan koleksiyonlar bu raflara dolsun; oyuncu ne kadar "
+               "ilerlediğini kendi dolan marketinde görsün. İlerleme haritası ve sepet özelleştirme ileride bu "
+               "ekrana eklenebilir.",
+               "Move Settings to a <b>gear icon</b> in the top bar. Use the freed tab for a <b>scrollable store</b> "
+               "that starts empty (Walmart-style aisles). New items unlocked along the way (ice cream, crisps, "
+               "drinks …) and completed collections fill its shelves, so players see how far they have come in their "
+               "own filling store. A progress map and cart customization can be added to this screen later.")),
             (T("Sektör verisi", "Industry benchmark"),
              T("En çok kazanan 500 oyunun <b>%70</b>'inde kozmetik/kilit açma satışı var (Appfigures, "
-               "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. Sepet özelleştirme bu boşluğu "
-               "kapatır. Ayrıntı: Sektörle Kıyas sayfası.",
+               "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. Koleksiyon marketi, ileride "
+               "kozmetik satışına da zemin olur. Ayrıntı: Sektörle Kıyas sayfası.",
                "<b>70%</b> of the top 500 earning games sell cosmetics or unlocks (Appfigures, <i>Mobile Games in "
-               "2025</i>, p. 30); none were seen in Market Match. Cart customization would close that gap. "
-               "Details: Industry Benchmark page.")),
+               "2025</i>, p. 30); none were seen in Market Match. A collection store also lays the ground for "
+               "cosmetic sales later. Details: Industry Benchmark page.")),
         ],
-        metrics=[T("Yeni sekmenin açılma oranı", "Open rate of the new tab"), "D7 retention",
-                 T("Coin harcama oranı (özelleştirme varyantında)", "Coin spend rate (customization variant)"),
+        metrics=[T("Market sekmesinin açılma oranı", "Open rate of the store tab"),
+                 T("Koleksiyon tamamlama oranı", "Collection completion rate"), "D7 / D30 retention",
                  T("Ayarlara erişimle ilgili destek talebi (artmamalı)",
                    "Support requests about finding Settings (should not rise)")],
-        effort="Düşük", impact="Orta",
+        effort="Orta", impact="Orta",
         images=[("settings-gear-concept.jpg", CONCEPT,
                  T("Ayarlar üst barda dişli ikonunda", "Settings moved to a gear icon in the top bar"), True)],
     ),
