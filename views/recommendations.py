@@ -236,12 +236,14 @@ RECS: list[dict] = [
              T("Ayarlar üst bardaki bir <b>dişli ikonuna</b> taşınsın. Boşalan sekmede, başta boş, "
                "<b>kaydırılabilir bir market</b> açılsın (Walmart tarzı reyonlar). Oyuncu ilerledikçe açılan yeni "
                "ürünler (dondurma, cips, içecekler …) ve tamamlanan koleksiyonlar bu raflara dolsun; oyuncu ne kadar "
-               "ilerlediğini kendi dolan marketinde görsün. İlerleme haritası ve sepet özelleştirme ileride bu "
-               "ekrana eklenebilir.",
+               "ilerlediğini kendi dolan marketinde görsün. <b>Alternatif olarak</b> bu sekme, 2. önerideki market "
+               "aşamalarını gösteren bir <b>ilerleme haritası</b> ya da maskot sepetin coin'le "
+               "<b>özelleştirilebildiği</b> bir ekran da olabilir.",
                "Move Settings to a <b>gear icon</b> in the top bar. Use the freed tab for a <b>scrollable store</b> "
                "that starts empty (Walmart-style aisles). New items unlocked along the way (ice cream, crisps, "
                "drinks …) and completed collections fill its shelves, so players see how far they have come in their "
-               "own filling store. A progress map and cart customization can be added to this screen later.")),
+               "own filling store. <b>Alternatively</b>, the tab could be a <b>progress map</b> of the market stages "
+               "from Recommendation 2, or a screen where players <b>customize</b> the mascot cart with coins.")),
             (T("Sektör verisi", "Industry benchmark"),
              T("En çok kazanan 500 oyunun <b>%70</b>'inde kozmetik/kilit açma satışı var (Appfigures, "
                "<i>Mobile Games in 2025</i>, s. 30); Market Match'te gözlenmedi. Koleksiyon marketi, ileride "
